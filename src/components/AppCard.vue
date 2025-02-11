@@ -4,7 +4,8 @@
       <img :src=data.thumbnail.filename />
 
       <div class="card-content__location">
-        <img :src=bgImage />
+        <img :src=data.info.icon.filename />
+        <p>{{ data.info.text }}</p>
       </div>
 
       <div class="card-content__description">
@@ -19,7 +20,7 @@
           </div>
 
           <div class="card-content__review">
-            <p>{{ data.rating.value }}  {{ data.rating.review_amount }}</p>
+            <p>{{ data.rating.review_amount }}</p>
           </div>
         </div>
 
@@ -69,7 +70,6 @@ interface AppCard {
     },
     meta: {
       exists:boolean,
-      
     },
     price: {
       exists:boolean,
