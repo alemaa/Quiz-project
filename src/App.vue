@@ -4,11 +4,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
 </head>
-
 <div class="welcome-content">
 <main>
   <img :src="header">
   <div class="welcome-content__description">
+
     <div v-if="activeStep === -1">
       {{ description }}
     </div>
@@ -17,12 +17,14 @@
       {{ descriptionTwo }}
     </div>
   </div>
-  <template v-for="(item,index) in screens" :key="index">
-    <ComponentWithCards v-if="activeStep === item.id"  data="item.data" />
+
+  <template v-for="(item,index) in data.screens" :key="index">
+    <AppScreens v-if="activeStep === item.screenId" data="item.data" />
   </template>
+
   <div class="welcome-content__button" :class="{ 'welcome-content__button--white' : activeStep >= 0 }">
     <button id="start" @click="startQuiz">
-      {{ activeStep === -1 ? text:text}}
+      {{ activeStep === -1 ? text:text}} {{ data.screens.s }}
     </button>
   </div>
 </main>
@@ -32,7 +34,8 @@
 <script setup>
 import {computed, ref} from "vue"
 import { useStore } from "vuex";
-import ComponentWithCards from "./components/ComponentWithCards.vue";
+import AppScreens from "./components/AppScreens.vue";
+import data from '@/assets/data.json';
 
 const store = useStore();
 const activeStep = computed(() => store.getters.activeStep);
@@ -104,7 +107,6 @@ const startQuiz =() => {
 
 body {
   background-color: var(--backgroundColor);
-
 }
 
 .welcome-content {
@@ -124,9 +126,6 @@ body {
   position: fixed;
   left: 0;
   bottom: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   background-color: black;
   border: 1px solid black;
   border-radius:20px;
