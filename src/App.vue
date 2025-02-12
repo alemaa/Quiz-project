@@ -9,22 +9,23 @@
   <img :src="header">
   <div class="welcome-content__description">
 
-    <div v-if="activeStep === -1">
+    <div v-if="activeStep === 0">
       {{ description }}
     </div>
     <br>
-    <div v-if="activeStep === -1">
+    <div v-if="activeStep === 0">
       {{ descriptionTwo }}
     </div>
   </div>
 
-  <template v-for="(item,index) in data.screens" :key="index">
-    <AppScreens v-if="activeStep === item.screenId" data="item.data" />
+  <template v-for="(item, index) in data.screens" :key="index">
+    <AppScreens v-if="activeStep === item.screen_id" :screen="item" />
   </template>
 
-  <div class="welcome-content__button" :class="{ 'welcome-content__button--white' : activeStep >= 0 }">
-    <button id="start" @click="startQuiz">
-      {{ activeStep === -1 ? text:text}} {{ data.screens.s }}
+
+    <div class="welcome-content__button" :class="{ 'welcome-content__button--white' : activeStep > 0 }">
+    <button id="start" @click="startQuiz" >
+      {{ activeStep === 0 ? text:text}}
     </button>
   </div>
 </main>
@@ -32,7 +33,7 @@
 </template>
 
 <script setup>
-import {computed, ref} from "vue"
+import {computed, ref, watchEffect} from "vue"
 import { useStore } from "vuex";
 import AppScreens from "./components/AppScreens.vue";
 import data from '@/assets/data.json';
@@ -46,18 +47,22 @@ ever since the 1500s, when an unknown printer took a galley of type and scramble
 const descriptionTwo=ref(`It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software
   like Aldus PageMaker including versions of Lorem Ipsum.`);
 
-const screens = ref([
-  {id:0,image:"/images/real_estate.png", text:"Select Property",color:"#F9EDED",btnColor:"#BE1E2D"},
-  {id:1,image:"/images/cars.png", text:"Select Vehicle", color:"#F8FBFF", btnColor:"#107FC4"}
+// TODO: Updejt da koristis kategorije
+
+const screens=ref(data.categories);
+
+const sc = ref([
+  {id:1,image:"/svg/logos/logo_real-estate.svg", text:"Select Property",btnColor:"#BE1E2D"},
+  {id:2,image:"/svg/logos/logo_cars-4-sale.svg", text:"Select Vehicle", btnColor:"#107FC4"}
 ])
 
 const header = computed(() => {
-  const currentScreen=screens.value.find(screen=>screen.id === store.state.activeStep);
-  return currentScreen ? currentScreen.image:"/images/lorem.png";
+  const currentScreen=sc.value.find(screen=>screen.id === store.state.activeStep);
+  return currentScreen ? currentScreen.image:"/svg/logos/logoLoremipsum.svg";
 });
 
 const text = computed(() => {
-  const currentScreen=screens.value.find(screen=>screen.id === store.state.activeStep);
+  const currentScreen=sc.value.find(screen=>screen.id === store.state.activeStep);
   return currentScreen ? currentScreen.text:"Start Quiz";
 });
 
@@ -71,7 +76,7 @@ const updateColor =()=>{
 }
 
 const btnColor = computed (() => {
-  const currentScreen=screens.value.find(screen=>screen.id === activeStep.value);
+  const currentScreen=sc.value.find(screen=>screen.id === activeStep.value);
   return currentScreen ? currentScreen.btnColor:"#ffffff";
 });
 const updateBtnColor =()=>{
@@ -79,8 +84,8 @@ const updateBtnColor =()=>{
 };
 
 const startQuiz =() => {
-  if(activeStep.value === -1) {
-    store.dispatch('UPDATE_STEP', 0);
+  if(activeStep.value === 0) {
+    store.dispatch('UPDATE_STEP', 1);
   }
   else {
     store.dispatch('UPDATE_STEP', activeStep.value + 1);
@@ -88,6 +93,10 @@ const startQuiz =() => {
   updateColor();
   updateBtnColor();
 }
+
+watchEffect(() => {
+  console.log(activeStep.value, 'active step')
+})
 </script>
 
 <style>

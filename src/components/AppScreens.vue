@@ -1,7 +1,7 @@
 <template>
     <div >
-        <AppCard  v-for="(item,index) in data.screens" :key="index"
-           :data="item.data"
+        <AppCard  v-for="(item,index) in screen.data" :key="index"
+           :data="item"
            />
     </div>
 </template>
@@ -9,11 +9,16 @@
 <script setup>
  import AppCard from './AppCard.vue';
 import { onMounted} from 'vue';
-import data from '@/assets/data.json';
+import { defineProps } from 'vue';
 
-
+const props = defineProps({
+  screen: {
+    type: Object,
+    required: true
+  }
+})
 onMounted(()=>{
-  console.log(data);
+  console.log(props.screen, 'screen')
 })
 </script>
 

@@ -2,7 +2,7 @@ import { createStore } from "vuex";
 
 const store = createStore ({
     state: {
-        activeStep:-1,
+        activeStep: 0,
     },
 
     mutations: {
@@ -14,7 +14,7 @@ const store = createStore ({
     actions: {
         UPDATE_STEP({commit},steps) {
             commit('SET_ACTIVE_STEP',steps);
-        }
+            }
     },
 
     getters:{
