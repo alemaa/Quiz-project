@@ -6,6 +6,11 @@
 </head>
 <div class="welcome-content">
 <main>
+  <AppCards v-for="item in items" :key="item"
+            @selection="selection"
+            :selected="selectedItems.includes(item.id)"
+            @info="info">
+  </AppCards>
   <img :src="header">
   <div class="welcome-content__description">
 
@@ -22,11 +27,13 @@
     <AppScreens v-if="activeStep === item.screen_id" :screen="item" />
   </template>
 
-
     <div class="welcome-content__button" :class="{ 'welcome-content__button--white' : activeStep > 0 }">
-    <button id="start" @click="startQuiz" >
-      {{ activeStep === 0 ? text:text}}
+    <button id="start" @click="startQuiz"  :disabled="isItemSelected"  :class="{'welcome-content__button--txtColor' :activeStep > 0 }">
+      {{ activeStep === 0 ? text:text }}
     </button>
+    <span class="welcome-content__screens" v-if="activeStep !== 0">
+      {{ activeStep }} / {{ Object.keys(data.screens).length }}
+    </span>
   </div>
 </main>
 </div>
@@ -40,6 +47,15 @@ import data from '@/assets/data.json';
 
 const store = useStore();
 const activeStep = computed(() => store.getters.activeStep);
+const isItemSelected=computed(()=>store.state.selectedItems.length>0);
+
+const info=()=>{
+  alert("info")
+}
+
+const selection=()=>{
+
+}
 
 const description = ref(`Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text
 ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,
@@ -52,7 +68,7 @@ const descriptionTwo=ref(`It was popularised in the 1960s with the release of Le
 const screens=ref(data.categories);
 
 const sc = ref([
-  {id:1,image:"/svg/logos/logo_real-estate.svg", text:"Select Property",btnColor:"#BE1E2D"},
+  {id:1,image:"/svg/logos/logo_real-estate.svg", text:"Select Property", btnColor:"#BE1E2D"},
   {id:2,image:"/svg/logos/logo_cars-4-sale.svg", text:"Select Vehicle", btnColor:"#107FC4"}
 ])
 
@@ -86,6 +102,9 @@ const updateBtnColor =()=>{
 const startQuiz =() => {
   if(activeStep.value === 0) {
     store.dispatch('UPDATE_STEP', 1);
+  }
+  else if(activeStep.value >=2 ){
+    store.dispatch('UPDATE_STEP',0);
   }
   else {
     store.dispatch('UPDATE_STEP', activeStep.value + 1);
@@ -125,6 +144,10 @@ body {
   font-family: 'Nunito';
 }
 
+.welcome-content__screens {
+  font-size: 20px;
+}
+
 .welcome-content__description {
   margin-top: 50px;
   text-align: start;
@@ -147,6 +170,10 @@ body {
   border:2px solid white;
 }
 
+.welcome-content__button--txtColor {
+  color: white;
+}
+
 #start {
   min-width: 50%;
   padding-top:10px;
@@ -157,6 +184,8 @@ body {
 }
 
 @media(min-width:480px){
-
+  .welcome-content {
+    display: inline;
+  }
 }
 </style>
