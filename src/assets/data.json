@@ -39,7 +39,7 @@
               "review_amount": 20
             },
             "tooltip": {
-              "exists": true,
+              "exists": false,
               "data": [
                 {
                   "name": "%s Payment",
@@ -118,7 +118,7 @@
               "review_amount": 44
             },
             "tooltip": {
-              "exists": true,
+              "exists": false,
               "data": [
                 {
                   "name": "%s Payment",
@@ -197,7 +197,7 @@
               "review_amount": 72
             },
             "tooltip": {
-              "exists": true,
+              "exists": false,
               "data": [
                 {
                   "name": "%s Payment",
@@ -276,7 +276,7 @@
               "review_amount": 112
             },
             "tooltip": {
-              "exists": true,
+              "exists": false,
               "data": [
                 {
                   "name": "%s Payment",
@@ -355,7 +355,7 @@
               "review_amount": 212
             },
             "tooltip": {
-              "exists": true,
+              "exists": false,
               "data": [
                 {
                   "name": "%s Payment",

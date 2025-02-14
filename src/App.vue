@@ -6,11 +6,6 @@
 </head>
 <div class="welcome-content">
 <main>
-  <AppCards v-for="item in items" :key="item"
-            @selection="selection"
-            :selected="selectedItems.includes(item.id)"
-            @info="info">
-  </AppCards>
   <img :src="header">
   <div class="welcome-content__description">
 
@@ -28,7 +23,7 @@
   </template>
 
     <div class="welcome-content__button" :class="{ 'welcome-content__button--white' : activeStep > 0 }">
-    <button id="start" @click="startQuiz"  :disabled="isItemSelected"  :class="{'welcome-content__button--txtColor' :activeStep > 0 }">
+    <button id="start" @click="startQuiz" :disabled = "activeStep > 0 && !isItemSelected" :class="{'welcome-content__button--txtColor' :activeStep > 0}">
       {{ activeStep === 0 ? text:text }}
     </button>
     <span class="welcome-content__screens" v-if="activeStep !== 0">
@@ -46,16 +41,10 @@ import AppScreens from "./components/AppScreens.vue";
 import data from '@/assets/data.json';
 
 const store = useStore();
+
 const activeStep = computed(() => store.getters.activeStep);
-const isItemSelected=computed(()=>store.state.selectedItems.length>0);
-
-const info=()=>{
-  alert("info")
-}
-
-const selection=()=>{
-
-}
+const selectedItems=computed(()=> store.getters.selectedItems);
+const isItemSelected=computed(()=> selectedItems.value.length>0);
 
 const description = ref(`Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text
 ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,
@@ -67,18 +56,18 @@ const descriptionTwo=ref(`It was popularised in the 1960s with the release of Le
 
 const screens=ref(data.categories);
 
-const sc = ref([
+const category = ref([
   {id:1,image:"/svg/logos/logo_real-estate.svg", text:"Select Property", btnColor:"#BE1E2D"},
   {id:2,image:"/svg/logos/logo_cars-4-sale.svg", text:"Select Vehicle", btnColor:"#107FC4"}
 ])
 
 const header = computed(() => {
-  const currentScreen=sc.value.find(screen=>screen.id === store.state.activeStep);
+  const currentScreen=category.value.find(screen=>screen.id === store.state.activeStep);
   return currentScreen ? currentScreen.image:"/svg/logos/logoLoremipsum.svg";
 });
 
 const text = computed(() => {
-  const currentScreen=sc.value.find(screen=>screen.id === store.state.activeStep);
+  const currentScreen=category.value.find(screen=>screen.id === store.state.activeStep);
   return currentScreen ? currentScreen.text:"Start Quiz";
 });
 
@@ -92,9 +81,10 @@ const updateColor =()=>{
 }
 
 const btnColor = computed (() => {
-  const currentScreen=sc.value.find(screen=>screen.id === activeStep.value);
+  const currentScreen=category.value.find(screen=>screen.id === activeStep.value);
   return currentScreen ? currentScreen.btnColor:"#ffffff";
 });
+
 const updateBtnColor =()=>{
   document.getElementById("start").style.setProperty('--btnColor',btnColor.value);
 };
@@ -183,9 +173,11 @@ body {
   background-color:var(--btnColor);
 }
 
+#start:disabled {
+  opacity: 55%;
+}
+
 @media(min-width:480px){
-  .welcome-content {
-    display: inline;
-  }
+
 }
 </style>
