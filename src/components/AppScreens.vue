@@ -7,7 +7,6 @@
            />
     </div>
 </template>
-
 <script setup>
 import AppCard from './AppCard.vue';
 import { onMounted,computed } from 'vue';
@@ -15,11 +14,12 @@ import { defineProps } from 'vue';
 import { useStore } from 'vuex';
 
 const store=useStore();
+
 const props = defineProps({
   screen: {
     type: Object,
     required: true
-  }
+  },
 })
 
 const selectedItems = computed(() => store.state.selectedItems);

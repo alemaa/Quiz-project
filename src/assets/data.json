@@ -3,12 +3,19 @@
     {
       "id": 1,
       "name": "Housing",
-      "color": "#F9EDED"
+      "color": "#F9EDED",
+      "icon":"/images/house.svg"
     },
     {
       "id": 2,
       "name": "Car",
-      "color": "#F8FBFF"
+      "color": "#F8FBFF",
+      "icon":"/images/car.svg"
+    },
+    {
+      "id":3,
+      "name":"Report",
+      "color":"#C6D9F3"
     }
   ],
   "screens": {

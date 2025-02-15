@@ -3,6 +3,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
 </head>
 <div class="welcome-content">
 <main>
@@ -22,11 +23,16 @@
     <AppScreens v-if="activeStep === item.screen_id" :screen="item" />
   </template>
 
-    <div class="welcome-content__button" :class="{ 'welcome-content__button--white' : activeStep > 0 }">
-    <button id="start" @click="startQuiz" :disabled = "activeStep > 0 && !isItemSelected" :class="{'welcome-content__button--txtColor' :activeStep > 0}">
+  <div v-if="activeStep<=2" class="welcome-content__button" :class="{ 'welcome-content__button--white' : activeStep > 0 }">
+    <button 
+      id="start"
+      @click="startQuiz" 
+      :disabled = "activeStep > 0 && !isItemSelected" 
+      :class="{'welcome-content__button--txtColor' :activeStep > 0}"
+      >
       {{ activeStep === 0 ? text:text }}
     </button>
-    <span class="welcome-content__screens" v-if="activeStep !== 0">
+    <span class="welcome-content__screens" v-if="activeStep !== 0 && activeStep<=2">
       {{ activeStep }} / {{ Object.keys(data.screens).length }}
     </span>
   </div>
@@ -40,11 +46,12 @@ import { useStore } from "vuex";
 import AppScreens from "./components/AppScreens.vue";
 import data from '@/assets/data.json';
 
+
 const store = useStore();
 
 const activeStep = computed(() => store.getters.activeStep);
-const selectedItems=computed(()=> store.getters.selectedItems);
-const isItemSelected=computed(()=> selectedItems.value.length>0);
+const selectedItems=computed(()=>store.getters.selectedItems);
+const isItemSelected=computed(()=>selectedItems.value?.length>0);
 
 const description = ref(`Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text
 ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,
@@ -58,8 +65,10 @@ const screens=ref(data.categories);
 
 const category = ref([
   {id:1,image:"/svg/logos/logo_real-estate.svg", text:"Select Property", btnColor:"#BE1E2D"},
-  {id:2,image:"/svg/logos/logo_cars-4-sale.svg", text:"Select Vehicle", btnColor:"#107FC4"}
+  {id:2,image:"/svg/logos/logo_cars-4-sale.svg", text:"Select Vehicle", btnColor:"#107FC4"},
+  {id:3,image:ref('')}
 ])
+
 
 const header = computed(() => {
   const currentScreen=category.value.find(screen=>screen.id === store.state.activeStep);
@@ -93,9 +102,6 @@ const startQuiz =() => {
   if(activeStep.value === 0) {
     store.dispatch('UPDATE_STEP', 1);
   }
-  else if(activeStep.value >=2 ){
-    store.dispatch('UPDATE_STEP',0);
-  }
   else {
     store.dispatch('UPDATE_STEP', activeStep.value + 1);
   }
@@ -125,6 +131,7 @@ watchEffect(() => {
 
 body {
   background-color: var(--backgroundColor);
+  padding-bottom:70px;
 }
 
 .welcome-content {
@@ -175,6 +182,11 @@ body {
 
 #start:disabled {
   opacity: 55%;
+}
+
+.report-content {
+  background-color: white;
+
 }
 
 @media(min-width:480px){

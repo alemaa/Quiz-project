@@ -4,7 +4,7 @@ const store = createStore ({
     state: {
         activeStep: 0,
         rating:0,
-        selectedItems:[],
+        selectedItems:[] ,
     },
 
     mutations: {
