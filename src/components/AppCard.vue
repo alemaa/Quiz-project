@@ -100,9 +100,19 @@ import { computed, defineProps, PropType, ref } from "vue";
 import { useStore } from "vuex";
 
 const store = useStore();
-const isSelected = computed(() => props.data?.id === store.state.selectedItems);
 
 const activeStep = computed(() => store.getters.activeStep);
+const selectedProperty = computed(() => store.state.selectedProperty);
+const selectedCar = computed(() => store.state.selectedCar);
+
+const isSelected = computed(() => {
+  if (activeStep.value === 1) {
+    return props.data?.id === store.state.selectedProperty?.id;
+  }
+   else {
+    return props.data?.id === store.state.selectedCar?.id;
+  }
+});
 
 const isOpen = ref(false);
 
@@ -111,16 +121,31 @@ const show = () => {
 };
 
 const selection = () => {
-  store.commit("SET_SELECTED_ITEMS", props.data?.id);
-  console.log(store.state.selectedItems);
+  if (activeStep.value === 1) {
+      if(selectedProperty.value?.id === props.data?.id) {
+        store.commit("SET_SELECTED_PROPERTY", null);
+      }
+      else {
+        store.commit("SET_SELECTED_PROPERTY", props.data);
+      }
+  } 
+  else if(activeStep.value === 2) { 
+      if (selectedCar.value?.id === props.data?.id) {
+        store.commit("SET_SELECTED_CAR", null);
+      }
+     else {
+      store.commit("SET_SELECTED_CAR", props.data);
+      }
+  }
 };
 
 const checkmarkColor=computed(()=>{
-if(activeStep.value-1===props?.data?.category_id)
+if(activeStep.value -1 === props?.data?.category_id)
 {
   return props?.data?.category_id===1 ?  "#0695D3":"#BE1E2D";
 }
 return "#BE1E2D";
+
 });
 
 interface toolTipData {
@@ -352,7 +377,6 @@ interface AppCard {
   justify-content: center;
 }
 
-
 .card-content__img.selected::before {
   content: "";
   inset: 0;
@@ -364,6 +388,7 @@ interface AppCard {
 @media (min-width: 480px) {
   .card-content {
     display: flex;
+    flex-direction: column;
   }
   .class {
     display: flex;

@@ -23,7 +23,15 @@
     <AppScreens v-if="activeStep === item.screen_id" :screen="item" />
   </template>
 
-  <div v-if="activeStep<=2" class="welcome-content__button" :class="{ 'welcome-content__button--white' : activeStep > 0 }">
+  <template  v-if="activeStep===3">
+  <ReportScreen :data="data.screens" :categories="data.categories" 
+  />
+  </template>
+  <div 
+    v-if="activeStep<=2" 
+    class="welcome-content__button" 
+    :class="{ 'welcome-content__button--white' : activeStep > 0 }"
+  >
     <button 
       id="start"
       @click="startQuiz" 
@@ -45,13 +53,17 @@ import {computed, ref, watchEffect} from "vue"
 import { useStore } from "vuex";
 import AppScreens from "./components/AppScreens.vue";
 import data from '@/assets/data.json';
-
+import ReportScreen from "./components/ReportScreen.vue";
 
 const store = useStore();
 
 const activeStep = computed(() => store.getters.activeStep);
-const selectedItems=computed(()=>store.getters.selectedItems);
-const isItemSelected=computed(()=>selectedItems.value?.length>0);
+const selectedProperty = computed(() => store.state.selectedProperty);
+const selectedCar = computed(() => store.state.selectedCar);
+
+const isItemSelected = computed(() => {
+  return activeStep.value === 1 ? selectedProperty?.value : selectedCar?.value;
+});
 
 const description = ref(`Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text
 ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,
@@ -69,7 +81,6 @@ const category = ref([
   {id:3,image:ref('')}
 ])
 
-
 const header = computed(() => {
   const currentScreen=category.value.find(screen=>screen.id === store.state.activeStep);
   return currentScreen ? currentScreen.image:"/svg/logos/logoLoremipsum.svg";
@@ -81,8 +92,13 @@ const text = computed(() => {
 });
 
 const bgColor = computed (() => {
+  if (activeStep.value === 3) {
+    return "#C6D9F3";
+  }
+  else {
   const currentScreen=screens.value.find(screen=>screen.id === activeStep.value);
   return currentScreen ? currentScreen.color:"#ffffff";
+  }
 });
 
 const updateColor =()=>{
@@ -102,7 +118,7 @@ const startQuiz =() => {
   if(activeStep.value === 0) {
     store.dispatch('UPDATE_STEP', 1);
   }
-  else {
+  else if (activeStep.value < 3){
     store.dispatch('UPDATE_STEP', activeStep.value + 1);
   }
   updateColor();
@@ -163,7 +179,7 @@ body {
 }
 
 .welcome-content__button--white {
- background-color: white;
+  background-color: white;
   border:2px solid white;
 }
 
@@ -186,10 +202,5 @@ body {
 
 .report-content {
   background-color: white;
-
-}
-
-@media(min-width:480px){
-
 }
 </style>

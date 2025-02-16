@@ -11,11 +11,6 @@
       "name": "Car",
       "color": "#F8FBFF",
       "icon":"/images/car.svg"
-    },
-    {
-      "id":3,
-      "name":"Report",
-      "color":"#C6D9F3"
     }
   ],
   "screens": {
