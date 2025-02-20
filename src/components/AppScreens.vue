@@ -2,18 +2,15 @@
     <div >
         <AppCard  v-for="(item,index) in screen.data" :key="index"
            :data="item"
-            :selected="isSelected(item)"
-            @selection="selection(item)"
+            :selected="selectedItems===item.id"
             @show="openDetails"
            />
     </div>
 </template>
 <script setup>
+import store from '@/store';
 import AppCard from './AppCard.vue';
-import { onMounted,computed,defineProps } from 'vue';
-import { useStore } from 'vuex';
-
-const store=useStore();
+import { onMounted,defineProps, computed } from 'vue';
 
 const props = defineProps({
   screen: {
@@ -21,23 +18,8 @@ const props = defineProps({
     required: true
   },
 })
-const activeStep = computed(()=> store.getters.activeStep);
-const selectedProperty = computed (() => store.getters.selectedProperty);
-const selectedCar = computed (() => store.getters.selectedCar);
 
-const isSelected = (item) => {
-  const selected = activeStep.value === 1 ? selectedProperty : selectedCar;
-  return item.id === selected?.id;
-};
-
-const selection =(item) => {
-  if(activeStep.value === 1) {
-  store.dispatch('SET_SELECTED_PROPERTY',selectedProperty.value?.id === item.id ? null : item);
-  }
-  else if(activeStep.value === 2) {
-    store.dispatch('SET_SELECTED_CAR',selectedCar.value?.id === item.id ? null : item);
-  }
-}
+const selectedItems = computed(() => store.state.selectedItems);
 
 onMounted(()=>{
   console.log(props.screen, 'screen')

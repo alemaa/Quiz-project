@@ -6,22 +6,28 @@
       @click="selection"
     >
       <img :src="data?.thumbnail?.filename" />
-      <div v-if="isSelected" class="check" :style="{'--checkmarkColor':checkmarkColor}">
-        <img src="/svg/icons/icon-checkmark.svg" />
+      <div
+        v-if="isSelected"
+        class="check"
+        :style="{ '--checkmark-color': checkmarkColor }"
+      >
+        <img src="/svg/icons/icon-checkmark.svg" alt="checkmark icon" />
       </div>
       <div class="card-content__location" v-if="data?.options?.info?.exists">
-      <img :src="data?.options.info?.icon?.filename" />
-      <p>{{ data?.options.info?.text }}</p>
-    </div>
+        <img :src="data?.options.info?.icon?.filename" />
+        <p>{{ data?.options.info?.text }}</p>
+      </div>
     </div>
     <div class="card-content__description">
       <div class="card-content__left-side">
         <h1 class="card-content__title">
           {{ data?.name }}
         </h1>
-
         <div class="card-content__avatar" v-if="data?.options?.agent.exists">
-          <img :src="data?.options?.agent?.avatar?.filename" />
+          <img
+            :src="data?.options?.agent?.avatar?.filename"
+            alt="avatar icon"
+          />
           <p>{{ data?.options?.agent?.name }}</p>
         </div>
 
@@ -60,7 +66,6 @@
           </div>
         </div>
       </div>
-
       <div class="right-side">
         <div class="card-content__price">
           <strong>
@@ -74,23 +79,23 @@
             class="card-content__tooltip"
             v-if="data?.options?.tooltip?.exists"
           >
-            <img @click="show" src="/images/icon-tooltip.svg" />
+            <img @click="show" src="/images/icon-tooltip.svg" alt="info icon" />
           </div>
         </div>
       </div>
       <div class="tooltip__open" v-if="isOpen">
-        <div class="custom-line">
-          <hr />
-          </div>
+        <hr />
         <div
           class="tooltip__item"
           v-for="(item, key) in data?.options.tooltip.data"
           :key="key"
         >
           <span class="tooltip__name">{{ item.name }} </span>
-          <strong><span class="tooltip_value">$ {{ item.value }}</span></strong>
+          <strong
+            ><span class="tooltip_value">$ {{ item.value }}</span></strong
+          >
         </div>
-       </div>
+      </div>
     </div>
   </div>
 </template>
@@ -102,17 +107,13 @@ import { useStore } from "vuex";
 const store = useStore();
 
 const activeStep = computed(() => store.getters.activeStep);
-const selectedProperty = computed(() => store.state.selectedProperty);
-const selectedCar = computed(() => store.state.selectedCar);
+const selectedItems = computed (() =>store.getters.selectedItems);
+const isSelected = computed(() => props.data?.id === selectedItems.value);
 
-const isSelected = computed(() => {
-  if (activeStep.value === 1) {
-    return props.data?.id === store.state.selectedProperty?.id;
-  }
-   else {
-    return props.data?.id === store.state.selectedCar?.id;
-  }
-});
+const selection = () => {
+  store.commit("SET_SELECTED_ITEMS", props.data);
+  console.log(selectedItems.value);
+};
 
 const isOpen = ref(false);
 
@@ -120,32 +121,11 @@ const show = () => {
   isOpen.value = !isOpen.value;
 };
 
-const selection = () => {
-  if (activeStep.value === 1) {
-      if(selectedProperty.value?.id === props.data?.id) {
-        store.commit("SET_SELECTED_PROPERTY", null);
-      }
-      else {
-        store.commit("SET_SELECTED_PROPERTY", props.data);
-      }
-  } 
-  else if(activeStep.value === 2) { 
-      if (selectedCar.value?.id === props.data?.id) {
-        store.commit("SET_SELECTED_CAR", null);
-      }
-     else {
-      store.commit("SET_SELECTED_CAR", props.data);
-      }
+const checkmarkColor = computed(() => {
+  if (activeStep.value - 1 === props?.data?.category_id) {
+    return props?.data?.category_id === 1 ? "#0695D3" : "#BE1E2D";
   }
-};
-
-const checkmarkColor=computed(()=>{
-if(activeStep.value -1 === props?.data?.category_id)
-{
-  return props?.data?.category_id===1 ?  "#0695D3":"#BE1E2D";
-}
-return "#BE1E2D";
-
+  return "#BE1E2D";
 });
 
 interface toolTipData {
@@ -159,7 +139,6 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-
 });
 
 interface AppCard {
@@ -212,7 +191,7 @@ interface AppCard {
 
 <style>
 :root {
-  --checkmarkColor:#BE1E2D;
+  --checkmark-color: #be1e2d;
 }
 
 .card-content {
@@ -240,12 +219,11 @@ interface AppCard {
 .card-content__img img {
   border-radius: 20px;
   object-fit: cover;
-  aspect-ratio: 1;
+  width: 100%;
+  height: auto;
 }
 
 .card-content__img {
-  max-width: 100%;
-  height: 100%;
   display: flex;
   flex-direction: column;
 }
@@ -286,8 +264,8 @@ interface AppCard {
   left: 0;
   right: 0;
   top: 0;
-  padding: 20px;
-  margin-top: -50px;
+  padding: 10px;
+  margin-top: -30px;
 }
 
 .right-side {
@@ -364,7 +342,7 @@ interface AppCard {
 }
 
 .check {
-  background-color:var(--checkmarkColor);
+  background-color: var(--checkmark-color);
   width: 85px;
   height: 85px;
   border-radius: 50px;
