@@ -7,19 +7,16 @@
            />
     </div>
 </template>
-
 <script setup>
+import store from '@/store';
 import AppCard from './AppCard.vue';
-import { onMounted,computed } from 'vue';
-import { defineProps } from 'vue';
-import { useStore } from 'vuex';
+import { onMounted,defineProps, computed } from 'vue';
 
-const store=useStore();
 const props = defineProps({
   screen: {
     type: Object,
     required: true
-  }
+  },
 })
 
 const selectedItems = computed(() => store.state.selectedItems);

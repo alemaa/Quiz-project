@@ -2,31 +2,32 @@
   <div class="card-content">
     <div
       class="card-content__img"
-      :class="{ selected: selected }"
+      :class="{ selected: isSelected }"
       @click="selection"
     >
-      <img :src="data?.thumbnail?.filename" />
-      <div v-if="isSelected" :class="{ check: activeStep === 1 }">
-        <img src="/svg/icons/icon-checkmark.svg" />
+      <img class="property-image" :src="data?.thumbnail?.filename" />
+      <div
+        v-if="isSelected"
+        class="check"
+        :style="{ '--checkmark-color': checkmarkColor }"
+      >
+        <img class="check-icon" src="/svg/icons/icon-checkmark.svg" alt="checkmark icon" />
       </div>
-      <div v-if="isSelected" :class="{ checkColor: activeStep === 2 }">
-        <img src="/svg/icons/icon-checkmark.svg" />
+      <div class="card-content__location" v-if="data?.options?.info?.exists">
+        <img class="cars-image" :src="data?.options.info?.icon?.filename" />
+        <p>{{ data?.options.info?.text }}</p>
       </div>
     </div>
-
-    <div class="card-content__location" v-if="data?.options?.info?.exists">
-      <img :src="data?.options.info?.icon?.filename" />
-      <p>{{ data?.options.info?.text }}</p>
-    </div>
-
     <div class="card-content__description">
       <div class="card-content__left-side">
         <h1 class="card-content__title">
           {{ data?.name }}
         </h1>
-
         <div class="card-content__avatar" v-if="data?.options?.agent.exists">
-          <img :src="data?.options?.agent?.avatar?.filename" />
+          <img
+            :src="data?.options?.agent?.avatar?.filename"
+            alt="avatar icon"
+          />
           <p>{{ data?.options?.agent?.name }}</p>
         </div>
 
@@ -65,7 +66,6 @@
           </div>
         </div>
       </div>
-
       <div class="right-side">
         <div class="card-content__price">
           <strong>
@@ -79,20 +79,23 @@
             class="card-content__tooltip"
             v-if="data?.options?.tooltip?.exists"
           >
-            <img @click="show" src="/images/icon-tooltip.svg" />
+            <img @click="show" src="/images/icon-tooltip.svg" alt="info icon" />
           </div>
         </div>
       </div>
       <div class="tooltip__open" v-if="isOpen">
+        <hr />
         <div
           class="tooltip__item"
           v-for="(item, key) in data?.options.tooltip.data"
           :key="key"
         >
           <span class="tooltip__name">{{ item.name }} </span>
-          <span class="tooltip_value">$ {{ item.value }} </span>
+          <strong
+            ><span class="tooltip_value">$ {{ item.value }}</span></strong
+          >
         </div>
-       </div>
+      </div>
     </div>
   </div>
 </template>
@@ -102,9 +105,17 @@ import { computed, defineProps, PropType, ref } from "vue";
 import { useStore } from "vuex";
 
 const store = useStore();
-const isSelected = computed(() => props.data?.id === store.state.selectedItems);
 
 const activeStep = computed(() => store.getters.activeStep);
+const selectedItems = computed (() =>store.getters.selectedItems);
+
+const isSelected = computed(() =>
+  selectedItems.value.some(item => item.id === props.data?.id)
+);
+
+const selection = () => {
+  store.dispatch("UPDATE_SELECTED_ITEMS", props.data);
+};
 
 const isOpen = ref(false);
 
@@ -112,10 +123,12 @@ const show = () => {
   isOpen.value = !isOpen.value;
 };
 
-const selection = () => {
-  store.commit("SET_SELECTED_ITEMS", props.data?.id);
-  console.log(store.state.selectedItems);
-};
+const checkmarkColor = computed(() => {
+  if (activeStep.value - 1 === props?.data?.category_id) {
+    return props?.data?.category_id === 1 ? "#0695D3" : "#BE1E2D";
+  }
+  return "#BE1E2D";
+});
 
 interface toolTipData {
   name: string;
@@ -124,7 +137,6 @@ interface toolTipData {
 
 const props = defineProps({
   data: Object as PropType<AppCard>,
-
   selected: {
     type: Boolean,
     default: false,
@@ -180,15 +192,22 @@ interface AppCard {
 </script>
 
 <style>
-.card-content {
-  margin-bottom: 28%;
-  position: relative;
+:root {
+  --checkmark-color: #be1e2d;
 }
+
+.card-content {
+  position: relative;
+  margin-bottom: 20px;
+}
+
 
 .tooltip__open {
   display: flex;
   flex-wrap: wrap;
   flex-direction: column;
+  width: 100%;
+  justify-content: space-between;
 }
 
 .tooltip__item {
@@ -200,18 +219,19 @@ interface AppCard {
   color: red;
 }
 
-.card-content__img img {
+.cars-image,.property-image {
   border-radius: 20px;
+  object-fit: cover;
+  width: 100%;
+  height: auto;
+}
+.check-icon {
+  width: 50px;
 }
 
 .card-content__img {
-  border-radius: 20px;
-  max-width: 100%;
-  height: auto;
   display: flex;
   flex-direction: column;
-  object-fit: cover;
-  position: relative;
 }
 
 .card-content__location {
@@ -225,10 +245,10 @@ interface AppCard {
   font-size: 11px;
   width: 94px;
   height: 26px;
-  position: absolute;
   margin-left: 25px;
   margin-top: 30px;
   color: #143656;
+  position: absolute;
 }
 
 .card-content__location img {
@@ -245,14 +265,19 @@ interface AppCard {
   border-radius: 20px;
   text-align: start;
   color: #143656;
-  position: absolute;
+  position: relative;
   bottom: 0;
   left: 0;
   right: 0;
-  padding: 20px;
-  margin-bottom: -22%;
+  top: 0;
+  padding: 10px;
+  margin-top: -30px;
 }
 
+.right-side {
+  display: flex;
+  align-items: center;
+}
 
 .card-content__title {
   font-family: "Nunito", sans-serif;
@@ -323,28 +348,14 @@ interface AppCard {
 }
 
 .check {
-  background-color: #be1e2d;
+  background-color: var(--checkmark-color);
   width: 85px;
   height: 85px;
   border-radius: 50px;
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.checkColor {
-  background-color: #0695d3;
-  width: 85px;
-  height: 85px;
-  border-radius: 50px;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -352,19 +363,16 @@ interface AppCard {
 
 .card-content__img.selected::before {
   content: "";
-  position: absolute;
   inset: 0;
   background: rgba(0, 0, 0, 0.5);
   border-radius: 20px;
+  position: absolute;
 }
 
 @media (min-width: 480px) {
   .card-content {
     display: flex;
-  }
-  .class {
-    display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
   }
 
   .card-content__description {
