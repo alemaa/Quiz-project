@@ -12,15 +12,15 @@
     <main>
       <img :src="header" />
       <div class="welcome-content__description">
-        <div v-if="activeStep === 0">
+        <div v-if="activeStep === stepId.START">
           {{ description }}
         </div>
         <br />
-        <div v-if="activeStep === 0">
+        <div v-if="activeStep === stepId.START">
           {{ descriptionTwo }}
         </div>
 
-        <div v-if="activeStep === 3">
+        <div v-if="activeStep === stepId.FASHION">
           <h2 class="fashion-description">{{ fasionDescription }}</h2>
           <div class="gender-icons">
             <div class="gender-male">
@@ -51,21 +51,21 @@
   /> -->
 
       <div
-        v-if="activeStep <= 2"
+        v-if="activeStep <= stepId.CARS"
         class="welcome-content__button"
-        :class="{ 'welcome-content__button--white': activeStep > 0 }"
+        :class="{ 'welcome-content__button--white': activeStep > stepId.START }"
       >
         <div class="button">
           <button
             id="start"
             @click="startQuiz"
-            :disabled="activeStep > 0 && !isItemSelected"
+            :disabled="activeStep > stepId.START &&  !isItemSelected"
             :class="{ 'welcome-content__button--txtColor': activeStep > 0 }"
           >
-            {{ activeStep === 0 ? text : text }}
+            {{ activeStep === stepId.START ? text : text }}
           </button>
         </div>
-        <span class="welcome-content__screens" v-if="activeStep !== 0">
+        <span class="welcome-content__screens" v-if="activeStep !== stepId.START">
           {{ activeStep }} of {{ Object.keys(data.screens).length }}
         </span>
       </div>
@@ -80,8 +80,11 @@ import AppScreens from "./components/AppScreens.vue";
 import data from "@/assets/data.json";
 
 const store = useStore();
+
 const selectedItems=computed(()=> store.getters.selectedItems);
+
 const isItemSelected=computed(()=> selectedItems.value.length>0);
+
 const activeStep = computed(() => store.getters.activeStep);
 
 const description = `Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text
@@ -93,6 +96,17 @@ const descriptionTwo = `It was popularised in the 1960s with the release of Letr
 const fasionDescription = `Please choose your gender to proceed:`;
 
 // TODO: Updejt da koristis kategorije
+
+const stepId = {
+  START: 0,
+  PROPERTY: 1,
+  CARS: 2,
+  FASHION: 3
+};
+
+watchEffect(() => {
+  console.log("Selected Items:", selectedItems.value);
+});
 
 const screens = ref(data.categories);
 
@@ -160,9 +174,9 @@ const updateBtnColor = () => {
 //const gender=ref(false);
 
 const startQuiz = () => {
-  if (activeStep.value === 0) {
+  if (activeStep.value === stepId.START) {
     store.dispatch("UPDATE_STEP", 1);
-  } else if (activeStep.value < 3) {
+  } else if (activeStep.value < stepId.FASHION) {
     store.dispatch("UPDATE_STEP", activeStep.value + 1);
   }
 

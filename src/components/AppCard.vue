@@ -2,19 +2,19 @@
   <div class="card-content">
     <div
       class="card-content__img"
-      :class="{ selected: selected }"
+      :class="{ selected: isSelected }"
       @click="selection"
     >
-      <img :src="data?.thumbnail?.filename" />
+      <img class="property-image" :src="data?.thumbnail?.filename" />
       <div
         v-if="isSelected"
         class="check"
         :style="{ '--checkmark-color': checkmarkColor }"
       >
-        <img src="/svg/icons/icon-checkmark.svg" alt="checkmark icon" />
+        <img class="check-icon" src="/svg/icons/icon-checkmark.svg" alt="checkmark icon" />
       </div>
       <div class="card-content__location" v-if="data?.options?.info?.exists">
-        <img :src="data?.options.info?.icon?.filename" />
+        <img class="cars-image" :src="data?.options.info?.icon?.filename" />
         <p>{{ data?.options.info?.text }}</p>
       </div>
     </div>
@@ -108,11 +108,13 @@ const store = useStore();
 
 const activeStep = computed(() => store.getters.activeStep);
 const selectedItems = computed (() =>store.getters.selectedItems);
-const isSelected = computed(() => props.data?.id === selectedItems.value);
+
+const isSelected = computed(() =>
+  selectedItems.value.some(item => item.id === props.data?.id)
+);
 
 const selection = () => {
-  store.commit("SET_SELECTED_ITEMS", props.data);
-  console.log(selectedItems.value);
+  store.dispatch("UPDATE_SELECTED_ITEMS", props.data);
 };
 
 const isOpen = ref(false);
@@ -199,6 +201,7 @@ interface AppCard {
   margin-bottom: 20px;
 }
 
+
 .tooltip__open {
   display: flex;
   flex-wrap: wrap;
@@ -216,11 +219,14 @@ interface AppCard {
   color: red;
 }
 
-.card-content__img img {
+.cars-image,.property-image {
   border-radius: 20px;
   object-fit: cover;
   width: 100%;
   height: auto;
+}
+.check-icon {
+  width: 50px;
 }
 
 .card-content__img {
@@ -367,10 +373,6 @@ interface AppCard {
   .card-content {
     display: flex;
     flex-direction: column;
-  }
-  .class {
-    display: flex;
-    flex-wrap: wrap;
   }
 
   .card-content__description {

@@ -3,7 +3,7 @@ import { createStore } from "vuex";
 const store = createStore ({
     state: {
         activeStep: 0,
-        selectedItems:[] as {id:number}[],
+        selectedItems:[] as {id:Number}[],
     },
 
     mutations: {
@@ -11,13 +11,15 @@ const store = createStore ({
             state.activeStep=steps
         },
         SET_SELECTED_ITEMS(state,item) {
-         const index = state.selectedItems.findIndex((selected)=>selected.id === item.id);
-        if(index !== -1) {
-            state.selectedItems.splice(index,1);
-             }
-            else {
-              state.selectedItems.push(item);
-          }
+            const index = state.selectedItems.findIndex((selected)=>selected.id === item.id);
+            if(index !== -1) {
+                state.selectedItems = state.selectedItems.filter(selected => selected.id !== item.id);
+                console.log(state.selectedItems, 'i ifffff');
+            } else {
+                 state.selectedItems.push(item);
+
+                console.log(state.selectedItems, 'state selected items');
+            }
         }
     },
 
@@ -25,18 +27,14 @@ const store = createStore ({
         UPDATE_STEP({commit},steps) {
             commit('SET_ACTIVE_STEP',steps);
         },
-        UPDATE_SELECTED_ITEMS({commit},items){
-            commit('SET_SELECTED_ITEMS',items)
+        UPDATE_SELECTED_ITEMS({commit},item){
+            commit('SET_SELECTED_ITEMS',item)
         }
     },
 
     getters: {
         activeStep:state=>state.activeStep,
         selectedItems:(state) => state.selectedItems,
-        activeScreen:(state)=>{
-            const screens=["start","property","cars","fashion"]
-            return screens[state.activeStep] || "start";
-        }
     }
 })
 
