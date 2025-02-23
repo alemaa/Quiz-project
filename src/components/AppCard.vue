@@ -109,11 +109,19 @@ const store = useStore();
 const activeStep = computed(() => store.getters.activeStep);
 const selectedItems = computed (() =>store.getters.selectedItems);
 
+//const currentSelectedItem = ref(null);
+
 const isSelected = computed(() =>
+// currentSelectedItem.value?.id === props.data?.id
   selectedItems.value.some(item => item.id === props.data?.id)
 );
 
 const selection = () => {
+  // if (currentSelectedItem.value?.id === props.data?.id) {
+  //   currentSelectedItem.value = null; 
+  // } else {
+  //   currentSelectedItem.value = props.data; 
+  // }
   store.dispatch("UPDATE_SELECTED_ITEMS", props.data);
 };
 

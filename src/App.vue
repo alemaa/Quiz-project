@@ -184,6 +184,7 @@ const startQuiz = () => {
   updateBtnColor();
 };
 
+
 watchEffect(() => {
   console.log(activeStep.value, "active step");
 });

@@ -13,7 +13,7 @@ const store = createStore ({
         SET_SELECTED_ITEMS(state,item) {
             const index = state.selectedItems.findIndex((selected)=>selected.id === item.id);
             if(index !== -1) {
-                state.selectedItems = state.selectedItems.filter(selected => selected.id !== item.id);
+                state.selectedItems.splice(index, 1);
                 console.log(state.selectedItems, 'i ifffff');
             } else {
                  state.selectedItems.push(item);
