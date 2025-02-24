@@ -20,7 +20,7 @@
           {{ descriptionTwo }}
         </div>
 
-        <div v-if="activeStep === stepId.FASHION && gender===false">
+        <div v-if= "gender">
           <h2 class="fashion-description">{{ fasionDescription }}</h2>
           <div class="gender-icons">
             <div class="gender-male">
@@ -49,7 +49,6 @@
 
       <!-- <ReportScreen v-if="activeStep===3" :categories="data.categories"
   /> -->
-
       <div
         v-if="activeStep <= stepId.FASHION"
         class="welcome-content__button"
@@ -171,11 +170,18 @@ const updateBtnColor = () => {
     .style.setProperty("--btnColor", btnColor.value);
 };
 
-const gender=ref(false);
-
+const gender = ref(false);
 const startQuiz = () => {
-  store.dispatch("UPDATE_STEP", activeStep.value + 1);
+  if (activeStep.value === stepId.CARS && !gender.value) {
+      gender.value = true; 
+      return; 
+  }
 
+  if (gender.value) {
+     return; 
+  }
+
+  store.dispatch("UPDATE_STEP",activeStep.value + 1)
   if(store.state.currentSelectedItem) {
     store.dispatch("UPDATE_SELECTED_ITEMS", store.state.currentSelectedItem)
   }
@@ -185,12 +191,14 @@ const startQuiz = () => {
   updateBtnColor();
 };
 const fashionMale = () => {
-  store.dispatch("UPDATE_STEP", activeStep.value + 1)
-}
+  gender.value = false; 
+  store.dispatch("UPDATE_STEP", stepId.FASHION);
+};
 
 const fashionFemale = () => {
-  store.dispatch("UPDATE_STEP", activeStep.value + 1)
-}
+  gender.value = false; 
+  store.dispatch("UPDATE_STEP", stepId.FASHION);
+};
 
 watchEffect(() => {
   console.log(activeStep.value, "active step");
