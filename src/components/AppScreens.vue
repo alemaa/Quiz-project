@@ -8,9 +8,9 @@
     </div>
 </template>
 <script setup>
-import store from '@/store';
+
 import AppCard from './AppCard.vue';
-import { onMounted,defineProps, computed } from 'vue';
+import { onMounted,defineProps } from 'vue';
 
 const props = defineProps({
   screen: {
@@ -19,7 +19,6 @@ const props = defineProps({
   },
 })
 
-const selectedItems = computed(() => store.state.selectedItems);
 
 onMounted(()=>{
   console.log(props.screen, 'screen')

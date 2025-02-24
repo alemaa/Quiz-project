@@ -11,7 +11,11 @@
         class="check"
         :style="{ '--checkmark-color': checkmarkColor }"
       >
-        <img class="check-icon" src="/svg/icons/icon-checkmark.svg" alt="checkmark icon" />
+        <img
+          class="check-icon"
+          src="/svg/icons/icon-checkmark.svg"
+          alt="checkmark icon"
+        />
       </div>
       <div class="card-content__location" v-if="data?.options?.info?.exists">
         <img class="cars-image" :src="data?.options.info?.icon?.filename" />
@@ -107,22 +111,16 @@ import { useStore } from "vuex";
 const store = useStore();
 
 const activeStep = computed(() => store.getters.activeStep);
-const selectedItems = computed (() =>store.getters.selectedItems);
 
-//const currentSelectedItem = ref(null);
-
-const isSelected = computed(() =>
-// currentSelectedItem.value?.id === props.data?.id
-  selectedItems.value.some(item => item.id === props.data?.id)
-);
+const isSelected = computed(() => store.state.currentSelectedItem?.id === props.data?.id);
 
 const selection = () => {
-  // if (currentSelectedItem.value?.id === props.data?.id) {
-  //   currentSelectedItem.value = null; 
-  // } else {
-  //   currentSelectedItem.value = props.data; 
-  // }
-  store.dispatch("UPDATE_SELECTED_ITEMS", props.data);
+  if (store.state.currentSelectedItem?.id === props.data?.id) {
+    store.state.currentSelectedItem = null;
+  } else {
+    store.state.currentSelectedItem = props.data;
+  }
+  console.log(store.state.currentSelectedItem, "current");
 };
 
 const isOpen = ref(false);
@@ -205,10 +203,8 @@ interface AppCard {
 }
 
 .card-content {
-  position: relative;
   margin-bottom: 20px;
 }
-
 
 .tooltip__open {
   display: flex;
@@ -227,7 +223,8 @@ interface AppCard {
   color: red;
 }
 
-.cars-image,.property-image {
+.cars-image,
+.property-image {
   border-radius: 20px;
   object-fit: cover;
   width: 100%;
@@ -240,6 +237,7 @@ interface AppCard {
 .card-content__img {
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
 .card-content__location {
@@ -363,7 +361,7 @@ interface AppCard {
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -100%);
+  transform: translate(-50%, -50%);
   display: flex;
   align-items: center;
   justify-content: center;

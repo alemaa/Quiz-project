@@ -4,6 +4,7 @@ const store = createStore ({
     state: {
         activeStep: 0,
         selectedItems:[] as {id:Number}[],
+        currentSelectedItem:null
     },
 
     mutations: {
@@ -13,11 +14,10 @@ const store = createStore ({
         SET_SELECTED_ITEMS(state,item) {
             const index = state.selectedItems.findIndex((selected)=>selected.id === item.id);
             if(index !== -1) {
-                state.selectedItems.splice(index, 1);
+                state.selectedItems.splice(index,1);
                 console.log(state.selectedItems, 'i ifffff');
             } else {
                  state.selectedItems.push(item);
-
                 console.log(state.selectedItems, 'state selected items');
             }
         }

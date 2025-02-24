@@ -20,7 +20,7 @@
           {{ descriptionTwo }}
         </div>
 
-        <div v-if="activeStep === stepId.FASHION">
+        <div v-if="activeStep === stepId.FASHION && gender===false">
           <h2 class="fashion-description">{{ fasionDescription }}</h2>
           <div class="gender-icons">
             <div class="gender-male">
@@ -51,7 +51,7 @@
   /> -->
 
       <div
-        v-if="activeStep <= stepId.CARS"
+        v-if="activeStep <= stepId.FASHION"
         class="welcome-content__button"
         :class="{ 'welcome-content__button--white': activeStep > stepId.START }"
       >
@@ -83,7 +83,7 @@ const store = useStore();
 
 const selectedItems=computed(()=> store.getters.selectedItems);
 
-const isItemSelected=computed(()=> selectedItems.value.length>0);
+const isItemSelected=computed(()=> store.state.currentSelectedItem);
 
 const activeStep = computed(() => store.getters.activeStep);
 
@@ -94,8 +94,6 @@ const descriptionTwo = `It was popularised in the 1960s with the release of Letr
   like Aldus PageMaker including versions of Lorem Ipsum.`;
 
 const fasionDescription = `Please choose your gender to proceed:`;
-
-// TODO: Updejt da koristis kategorije
 
 const stepId = {
   START: 0,
@@ -124,7 +122,9 @@ const category = ref([
     btnColor: "#107FC4",
   },
   { id: 3,
-    image: "/svg/logos/fashion_fit.svg"
+    image: "/svg/logos/fashion_fit.svg",
+    text:"Select Outfit",
+    btnColor:"#C5E6F9"
   },
 ]);
 
@@ -171,19 +171,26 @@ const updateBtnColor = () => {
     .style.setProperty("--btnColor", btnColor.value);
 };
 
-//const gender=ref(false);
+const gender=ref(false);
 
 const startQuiz = () => {
-  if (activeStep.value === stepId.START) {
-    store.dispatch("UPDATE_STEP", 1);
-  } else if (activeStep.value < stepId.FASHION) {
-    store.dispatch("UPDATE_STEP", activeStep.value + 1);
+  store.dispatch("UPDATE_STEP", activeStep.value + 1);
+
+  if(store.state.currentSelectedItem) {
+    store.dispatch("UPDATE_SELECTED_ITEMS", store.state.currentSelectedItem)
   }
+  store.state.currentSelectedItem=null;
 
   updateColor();
   updateBtnColor();
 };
+const fashionMale = () => {
+  store.dispatch("UPDATE_STEP", activeStep.value + 1)
+}
 
+const fashionFemale = () => {
+  store.dispatch("UPDATE_STEP", activeStep.value + 1)
+}
 
 watchEffect(() => {
   console.log(activeStep.value, "active step");
@@ -237,6 +244,7 @@ body {
   margin: 0 auto;
   font-family: "Nunito";
   display: flex;
+  justify-content: center;
 }
 
 .welcome-content__screens {
