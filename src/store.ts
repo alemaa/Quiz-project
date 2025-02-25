@@ -33,7 +33,7 @@ const store = createStore ({
     },
 
     getters: {
-        activeStep:state=>state.activeStep,
+        activeStep:(state)=>state.activeStep,
         selectedItems:(state) => state.selectedItems,
         currentSelectedItem:(state)=>state.currentSelectedItem
     }

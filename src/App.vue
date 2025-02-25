@@ -20,7 +20,7 @@
           {{ descriptionTwo }}
         </div>
 
-        <div v-if= "gender">
+        <div v-if="gender">
           <h2 class="fashion-description">{{ fasionDescription }}</h2>
           <div class="gender-icons">
             <div class="gender-male">
@@ -43,14 +43,13 @@
         </div>
       </div>
 
-      <template v-for="(item, index) in data.screens" :key="index">
-        <AppScreens v-if="activeStep === item.screen_id" :screen="item" />
+      <template v-for = "(item, index) in data.screens" :key="index">
+        <AppScreens v-if = "activeStep === item.screen_id" :screen="item" />
       </template>
 
       <!-- <ReportScreen v-if="activeStep===3" :categories="data.categories"
   /> -->
-      <div
-        v-if="activeStep <= stepId.FASHION"
+      <div v-if="!gender"
         class="welcome-content__button"
         :class="{ 'welcome-content__button--white': activeStep > stepId.START }"
       >
@@ -58,13 +57,16 @@
           <button
             id="start"
             @click="startQuiz"
-            :disabled="activeStep > stepId.START &&  !isItemSelected"
-            :class="{ 'welcome-content__button--txtColor': activeStep > 0 }"
+            :disabled="activeStep > stepId.START && activeStep<=stepId.CARS && !isItemSelected"
+            :class="{ 'welcome-content__button--txtColor': activeStep > stepId.START && activeStep<=stepId.CARS}"
           >
-            {{ activeStep === stepId.START ? text : text }}
+            {{ activeStep ? text : text }}
           </button>
         </div>
-        <span class="welcome-content__screens" v-if="activeStep !== stepId.START">
+        <span
+          class="welcome-content__screens"
+          v-if="activeStep !== stepId.START"
+        >
           {{ activeStep }} of {{ Object.keys(data.screens).length }}
         </span>
       </div>
@@ -80,9 +82,9 @@ import data from "@/assets/data.json";
 
 const store = useStore();
 
-const selectedItems=computed(()=> store.getters.selectedItems);
+const selectedItems = computed(() => store.getters.selectedItems);
 
-const isItemSelected=computed(()=> store.state.currentSelectedItem);
+const isItemSelected = computed(() => store.state.currentSelectedItem);
 
 const activeStep = computed(() => store.getters.activeStep);
 
@@ -98,7 +100,7 @@ const stepId = {
   START: 0,
   PROPERTY: 1,
   CARS: 2,
-  FASHION: 3
+  FASHION: 3,
 };
 
 watchEffect(() => {
@@ -120,10 +122,11 @@ const category = ref([
     text: "Select Vehicle",
     btnColor: "#107FC4",
   },
-  { id: 3,
+  {
+    id: 3,
     image: "/svg/logos/fashion_fit.svg",
-    text:"Select Outfit",
-    btnColor:"#C5E6F9"
+    text: "Select Outfit",
+    btnColor:"#F5DDFDB0"
   },
 ]);
 
@@ -152,6 +155,8 @@ const bgColor = computed(() => {
   return currentScreen ? currentScreen.color : "#ffffff";
   //}
 });
+console.log(data.screens.fashion.male,'fashion-male')
+console.log(data.screens.fashion.female,'fashion-female')
 
 const updateColor = () => {
   document.body.style.setProperty("--backgroundColor", bgColor.value);
@@ -165,40 +170,43 @@ const btnColor = computed(() => {
 });
 
 const updateBtnColor = () => {
-  document
-    .getElementById("start")
-    .style.setProperty("--btnColor", btnColor.value);
+  document.getElementById("start").style.setProperty("--btnColor", btnColor.value);
 };
 
 const gender = ref(false);
+
 const startQuiz = () => {
+  if (store.state.currentSelectedItem) {
+    store.dispatch("UPDATE_SELECTED_ITEMS", store.state.currentSelectedItem);
+  }
+  store.state.currentSelectedItem = null;
+
   if (activeStep.value === stepId.CARS && !gender.value) {
-      gender.value = true; 
-      return; 
+    gender.value = true;
   }
 
-  if (gender.value) {
-     return; 
-  }
+  console.log(gender.value, 'gendderr')
+  store.dispatch("UPDATE_STEP", activeStep.value + 1);
 
-  store.dispatch("UPDATE_STEP",activeStep.value + 1)
-  if(store.state.currentSelectedItem) {
-    store.dispatch("UPDATE_SELECTED_ITEMS", store.state.currentSelectedItem)
+  if(activeStep.value >3 ){
+    store.dispatch('UPDATE_STEP',0);
   }
-  store.state.currentSelectedItem=null;
 
   updateColor();
   updateBtnColor();
 };
+
 const fashionMale = () => {
-  gender.value = false; 
-  store.dispatch("UPDATE_STEP", stepId.FASHION);
+  gender.value = false;
+  store.dispatch("UPDATE_STEP", activeStep.value);
+  console.log(gender.value,'gender male')
 };
 
 const fashionFemale = () => {
-  gender.value = false; 
-  store.dispatch("UPDATE_STEP", stepId.FASHION);
-};
+  gender.value = false;
+  store.dispatch("UPDATE_STEP", activeStep.value);
+  console.log(gender.value,'gender female')
+}
 
 watchEffect(() => {
   console.log(activeStep.value, "active step");

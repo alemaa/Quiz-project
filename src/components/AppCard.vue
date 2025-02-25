@@ -78,7 +78,6 @@
             </p>
             <p v-else>${{ data?.options?.price?.value }}</p>
           </strong>
-
           <div
             class="card-content__tooltip"
             v-if="data?.options?.tooltip?.exists"
@@ -95,8 +94,9 @@
           :key="key"
         >
           <span class="tooltip__name">{{ item.name }} </span>
-          <strong
-            ><span class="tooltip_value">$ {{ item.value }}</span></strong
+          <strong>
+            <span class="tooltip_value">$ {{ item.value }}</span>
+          </strong
           >
         </div>
       </div>
@@ -107,12 +107,13 @@
 <script setup lang="ts">
 import { computed, defineProps, PropType, ref } from "vue";
 import { useStore } from "vuex";
-
 const store = useStore();
 
 const activeStep = computed(() => store.getters.activeStep);
 
-const isSelected = computed(() => store.state.currentSelectedItem?.id === props.data?.id);
+const isSelected = computed(
+  () => store.state.currentSelectedItem?.id === props.data?.id
+);
 
 const selection = () => {
   if (store.state.currentSelectedItem?.id === props.data?.id) {
@@ -146,7 +147,7 @@ const props = defineProps({
   selected: {
     type: Boolean,
     default: false,
-  },
+  }
 });
 
 interface AppCard {
@@ -230,6 +231,7 @@ interface AppCard {
   width: 100%;
   height: auto;
 }
+
 .check-icon {
   width: 50px;
 }
@@ -385,5 +387,6 @@ interface AppCard {
     min-width: 50%;
     position: relative;
   }
+
 }
 </style>

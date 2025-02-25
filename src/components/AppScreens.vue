@@ -1,6 +1,6 @@
 <template>
-    <div >
-        <AppCard  v-for="(item,index) in screen.data" :key="index"
+    <div class="cards">
+        <AppCard  v-for ="(item,index) in screen.data" :key="index"
            :data="item"
             :selected="selectedItems===item.id"
             @show="openDetails"
@@ -19,12 +19,17 @@ const props = defineProps({
   },
 })
 
-
 onMounted(()=>{
   console.log(props.screen, 'screen')
 })
 </script>
 
 <style>
-
+@media (min-width: 480px) {
+  .cards {
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+  }
+}
 </style>
