@@ -1,6 +1,6 @@
 <template>
     <div class="cards">
-        <AppCard  v-for ="(item,index) in screen.data" :key="index"
+        <AppCard  v-for ="(item,index) in data" :key="index"
            :data="item"
             :selected="selectedItems===item.id"
             @show="openDetails"
@@ -13,10 +13,13 @@ import AppCard from './AppCard.vue';
 import { onMounted,defineProps } from 'vue';
 
 const props = defineProps({
-  screen: {
+  data: {
     type: Object,
     required: true
   },
+  fashionData: {
+    type:Array,
+  }
 })
 
 onMounted(()=>{

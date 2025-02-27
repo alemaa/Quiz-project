@@ -87,7 +87,9 @@
         </div>
       </div>
       <div class="tooltip__open" v-if="isOpen">
-        <hr />
+      <div>
+        <hr>
+      </div>
         <div
           class="tooltip__item"
           v-for="(item, key) in data?.options.tooltip.data"
@@ -387,6 +389,5 @@ interface AppCard {
     min-width: 50%;
     position: relative;
   }
-
 }
 </style>
