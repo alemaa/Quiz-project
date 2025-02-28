@@ -1,33 +1,41 @@
 <template>
-    <div class="cards">
+    <div class="cards" :class="{'cards-fashion' :activeStep===3}">
         <AppCard  v-for ="(item,index) in data" :key="index"
            :data="item"
-            :selected="selectedItems===item.id"
-            @show="openDetails"
-           />
+        />
     </div>
 </template>
 <script setup>
 
+import store from '@/store';
 import AppCard from './AppCard.vue';
-import { onMounted,defineProps } from 'vue';
+import { onMounted,defineProps, watch, computed } from 'vue';
+
+const activeStep = computed (() =>store.getters.activeStep);
 
 const props = defineProps({
   data: {
     type: Object,
     required: true
-  },
-  fashionData: {
-    type:Array,
   }
 })
 
 onMounted(()=>{
-  console.log(props.screen, 'screen')
+  console.log(props.data, 'screen')
 })
+
+watch(()=>props.data, () => {
+  console.log(props.data, 'screen watcher')
+}, { immediate: true })
 </script>
 
 <style>
+.cards-fashion {
+  background-color: white;
+  padding-top: 50px;
+  border-radius: 20px;
+}
+
 @media (min-width: 480px) {
   .cards {
     display: flex;

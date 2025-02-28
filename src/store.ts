@@ -4,7 +4,8 @@ const store = createStore ({
     state: {
         activeStep: 0,
         selectedItems:[] as {id:Number}[],
-        currentSelectedItem:null
+        currentSelectedItem:null,
+        genderValue:null,
     },
 
     mutations: {
@@ -20,6 +21,9 @@ const store = createStore ({
                  state.selectedItems.push(item);
                 console.log(state.selectedItems, 'state selected items');
             }
+        },
+        SET_GENDER_VALUE(state,gender){
+            state.genderValue=gender
         }
     },
 
@@ -29,13 +33,17 @@ const store = createStore ({
         },
         UPDATE_SELECTED_ITEMS({commit},item){
             commit('SET_SELECTED_ITEMS',item)
+        },
+        UPDATE_GENDER_VALUE({commit},gender){
+            commit('SET_GENDER_VALUE',gender)
         }
     },
 
     getters: {
         activeStep:(state)=>state.activeStep,
         selectedItems:(state) => state.selectedItems,
-        currentSelectedItem:(state)=>state.currentSelectedItem
+        currentSelectedItem:(state)=>state.currentSelectedItem,
+        genderValue:(state)=>state.genderValue
     }
 })
 

@@ -10,7 +10,7 @@
       "id": 2,
       "name": "Car",
       "color": "#F8FBFF",
-      "icon":"/images/Car.svg"
+      "icon":"/images/car.svg"
     },
     {
       "id": 3,
@@ -893,7 +893,7 @@
               "description": "Factorie",
               "thumbnail": {
                 "dir": "male",
-                "filename": "3_factorie.jpg"
+                "filename": "/images/fashion/male/3_factorie.jpg"
               },
               "price": 20
             },
@@ -903,7 +903,7 @@
               "description": "Fila",
               "thumbnail": {
                 "dir": "male",
-                "filename": "3_fila.jpg"
+                "filename": "/images/fashion/male/3_fila.jpg"
               },
               "price": 25
             },
@@ -913,7 +913,7 @@
               "description": "Chemist Warehouse",
               "thumbnail": {
                 "dir": "male",
-                "filename": "3_chemist.jpg"
+                "filename": "/images/fashion/male/3_chemist.jpg"
               },
               "price": 15
             },
@@ -923,7 +923,7 @@
               "description": "Big W",
               "thumbnail": {
                 "dir": "male",
-                "filename": "3_fila.jpg"
+                "filename": "/images/fashion/male/3_fila.jpg"
               },
               "price": 27
             }
@@ -940,7 +940,7 @@
               "description": "Nike",
               "thumbnail": {
                 "dir": "male",
-                "filename": "2_nike.jpg"
+                "filename": "/images/fashion/male/2_nike.jpg"
               },
               "price": 50
             },
@@ -950,7 +950,7 @@
               "description": "Tommy Hilfinger",
               "thumbnail": {
                 "dir": "male",
-                "filename": "2_tommy.jpg"
+                "filename": "/images/fashion/male/2_tommy.jpg"
               },
               "price": 65
             },
@@ -960,7 +960,7 @@
               "description": "Gucci",
               "thumbnail": {
                 "dir": "male",
-                "filename": "2_gucci.jpg"
+                "filename": "/images/fashion/male/2_gucci.jpg"
               },
               "price": 185
             },
@@ -970,7 +970,7 @@
               "description": "Adidas",
               "thumbnail": {
                 "dir": "male",
-                "filename": "2_adidas.jpg"
+                "filename": "/images/fashion/male/2_adidas.jpg"
               },
               "price": 200
             }
@@ -987,7 +987,7 @@
               "description": "Versace",
               "thumbnail": {
                 "dir": "male",
-                "filename": "1_versace.jpg"
+                "filename": "/images/fashion/male/1_versace.jpg"
               },
               "price": 460
             },
@@ -997,7 +997,7 @@
               "description": "Tommy Hilfinger",
               "thumbnail": {
                 "dir": "male",
-                "filename": "1_tommy.jpg"
+                "filename": "/images/fashion/male/1_tommy.jpg"
               },
               "price": 120
             },
@@ -1007,7 +1007,7 @@
               "description": "Gucci",
               "thumbnail": {
                 "dir": "male",
-                "filename": "1_gucci.jpg"
+                "filename": "/images/fashion/male/1_gucci.jpg"
               },
               "price": 520
             },
@@ -1017,7 +1017,7 @@
               "description": "Calvin Klein",
               "thumbnail": {
                 "dir": "male",
-                "filename": "1_calvin.jpg"
+                "filename": "/images/fashion/male/1_calvin.jpg"
               },
               "price": 200
             }
@@ -1036,7 +1036,7 @@
               "description": "Kmart",
               "thumbnail": {
                 "dir": "female",
-                "filename": "3_kmart.jpg"
+                "filename": "/images/fashion/female/3_kmart.jpg"
               },
               "price": 10
             },
@@ -1046,7 +1046,7 @@
               "description": "Target",
               "thumbnail": {
                 "dir": "female",
-                "filename": "3_target.jpg"
+                "filename": "/images/fashion/female/3_target.jpg"
               },
               "price": 10
             },
@@ -1056,7 +1056,7 @@
               "description": "Kmart",
               "thumbnail": {
                 "dir": "female",
-                "filename": "3_kmart-pouch.jpg"
+                "filename": "/images/fashion/female/3_kmart-pouch.jpg"
               },
               "price": 8
             },
@@ -1066,7 +1066,7 @@
               "description": "Big W",
               "thumbnail": {
                 "dir": "female",
-                "filename": "3_bigw.jpg"
+                "filename": "/images/fashion/female/3_bigw.jpg"
               },
               "price": 25
             }
@@ -1083,7 +1083,7 @@
               "description": "Nike",
               "thumbnail": {
                 "dir": "female",
-                "filename": "2_nike.jpg"
+                "filename": "/images/fashion/female/2_nike.jpg"
               },
               "price": 50
             },
@@ -1093,7 +1093,7 @@
               "description": "Nike",
               "thumbnail": {
                 "dir": "female",
-                "filename": "2_nike-shorts.jpg"
+                "filename": "/images/fashion/female/2_nike-shorts.jpg"
               },
               "price": 45
             },
@@ -1103,7 +1103,7 @@
               "description": "Colette Hayman",
               "thumbnail": {
                 "dir": "female",
-                "filename": "2_colette.jpg"
+                "filename": "/images/fashion/female/2_colette.jpg"
               },
               "price": 50
             },
@@ -1113,7 +1113,7 @@
               "description": "Adidas",
               "thumbnail": {
                 "dir": "female",
-                "filename": "2_adidas.jpg"
+                "filename": "/images/fashion/female/2_adidas.jpg"
               },
               "price": 120
             }
@@ -1130,7 +1130,7 @@
               "description": "Ralph Lauren",
               "thumbnail": {
                 "dir": "female",
-                "filename": "1_ralph.jpg"
+                "filename": "/images/fashion/female/1_ralph.jpg"
               },
               "price": 120
             },
@@ -1140,7 +1140,7 @@
               "description": "NYDJ",
               "thumbnail": {
                 "dir": "female",
-                "filename": "1_nydj.jpg"
+                "filename": "/images/fashion/female/1_nydj.jpg"
               },
               "price": 276
             },
@@ -1150,7 +1150,7 @@
               "description": "Louis Vuitton",
               "thumbnail": {
                 "dir": "female",
-                "filename": "1_louis.jpg"
+                "filename": "/images/fashion/female/1_louis.jpg"
               },
               "price": 520
             },
@@ -1160,7 +1160,7 @@
               "description": "Calvin Klein",
               "thumbnail": {
                 "dir": "female",
-                "filename": "1_calvin.jpg"
+                "filename": "/images/fashion/female/1_calvin.jpg"
               },
               "price": 200
             }

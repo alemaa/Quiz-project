@@ -3,7 +3,7 @@
     </h1>
     <div class="report-content">
         <div class="report-details">
-            <div class="report-categories" v-for="category in categories" :key="category.id">
+            <div class="report-categories" v-for="(category,index) in categories" :key="index">
                 <img :src="category?.icon">
                 <p> {{ category?.name }}</p>
                 <div  v-if="category?.id===1">
@@ -17,13 +17,13 @@
         <div class="report-price">
             <div class="report-price__property">
                 <strong>
-                    <p v-if="selectedProperty">${{selectedProperty?.options?.price?.weekly_value }}</p>
+                    <p v-if="selectedItems">${{selectedItems?.options?.price?.weekly_value }}</p>
                 </strong>
                 <img src="/images/details_icon.svg">
             </div>
             <div class="report-price__car">
                 <strong>
-                    <p v-if="selectedCar">${{selectedCar?.options?.price?.value }}</p>
+                    <p v-if="selectedItems">${{selectedItems?.options?.price?.value }}</p>
                 </strong>
                 <img src="/images/details_icon.svg">
             </div>
@@ -51,11 +51,9 @@ defineProps({
 });
 
 const store = useStore();
-const selectedProperty = computed(() => store.state.selectedProperty);
-const selectedCar = computed(() => store.state.selectedCar);
-
+const selectedItems=computed(()=>store.getters.selectedItems);
 const totalPrice = computed(() => {
-  return (selectedProperty?.value.options?.price?.weekly_value || 0) + (selectedCar?.value.options?.price?.value || 0);
+  return (selectedItems?.value.options?.price?.weekly_value || 0);
 });
 </script>
 

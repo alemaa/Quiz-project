@@ -22,7 +22,7 @@
         <p>{{ data?.options.info?.text }}</p>
       </div>
     </div>
-    <div class="card-content__description">
+    <div class="card-content__description" :class="{'card-fashion':activeStep === 3}">
       <div class="card-content__left-side">
         <h1 class="card-content__title">
           {{ data?.name }}
@@ -64,19 +64,21 @@
           </div>
           <p>{{ data?.options?.rating?.review_amount }} <span>reviews</span></p>
         </div>
-        <div class="card-content__meta" v-else>
-          <div v-for="(item, key) in data?.options.meta.items" :key="key">
+        <div class="card-content__meta" v-else-if="data?.options?.meta?.items">
+          <div v-for="(item, key) in data?.options?.meta.items" :key="key">
             <p>{{ item }}</p>
           </div>
         </div>
       </div>
+
       <div class="right-side">
         <div class="card-content__price">
           <strong>
             <p v-if="activeStep === 1">
               ${{ data?.options?.price?.weekly_value }}<span> per week</span>
             </p>
-            <p v-else>${{ data?.options?.price?.value }}</p>
+            <p v-else-if="activeStep === 2">${{ data?.options?.price?.value }}</p>
+            <p v-if="activeStep===3" class="price-fashion">${{ data?.price }}</p>
           </strong>
           <div
             class="card-content__tooltip"
@@ -86,6 +88,7 @@
           </div>
         </div>
       </div>
+
       <div class="tooltip__open" v-if="isOpen">
       <div>
         <hr>
@@ -136,6 +139,9 @@ const checkmarkColor = computed(() => {
   if (activeStep.value - 1 === props?.data?.category_id) {
     return props?.data?.category_id === 1 ? "#0695D3" : "#BE1E2D";
   }
+  else if(activeStep.value===3) {
+    return "#C5E6F9";
+  }
   return "#BE1E2D";
 });
 
@@ -153,6 +159,7 @@ const props = defineProps({
 });
 
 interface AppCard {
+  price:number;
   id: string;
   name: string;
   description: string;
@@ -284,6 +291,10 @@ interface AppCard {
   margin-top: -30px;
 }
 
+.card-fashion {
+ margin-top: 0;
+}
+
 .right-side {
   display: flex;
   align-items: center;
@@ -379,6 +390,9 @@ interface AppCard {
   position: absolute;
 }
 
+.price-fashion {
+  display: flex;
+}
 @media (min-width: 480px) {
   .card-content {
     display: flex;

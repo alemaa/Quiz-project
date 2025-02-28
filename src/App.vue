@@ -23,30 +23,46 @@
         <div v-if="displayGenderScreen">
           <h2 class="fashion-description">{{ fasionDescription }}</h2>
           <div class="gender">
-          <div v-for="(gender, index) in gender" :key="index">
-            <button class="gender-icons" @click="fashionGender(gender)">
-              <img :src="gender.image" alt="gender icon" />
-              <strong><p>{{ gender.text }}</p></strong>
-            </button>
+            <div v-for="(gender, index) in genderSelect" :key="index">
+              <button class="gender-icons" @click="fashionGender(gender.value)">
+                <img :src="gender.image" alt="gender icon" />
+                <strong><p>{{ gender.text }}</p></strong>
+              </button>
+            </div>
           </div>
         </div>
-        </div>
-      </div>
 
+      </div>
       <div>
-        <template v-for="(item, index) in data.screens" :key="index">
-          <!-- :screen="activeStep === FASHION ? item[gender] : item.data" -->
-          <AppScreens
+        <template v-for="(item, index) in Object.values(data.screens)" :key="index">
+          <!-- try to optimize this with the computed and formatting data, instead of two v-for -->
+           <template v-if="activeStep === item.screen_id">
+             <template v-if="activeStep === stepId.FASHION && genderValue">
+              <AppScreens
+                v-for="(fashion, index) in Object.values(item[genderValue])"
+                :data="fashion.data"
+                :key="index"
+              />
+            </template>
+
+            <AppScreens
+                 v-else
+                :data="item.data"
+              />
+           </template>
+
+
+          <!-- <AppScreens
             v-if="activeStep === item.screen_id"
-            :data="activeStep === stepId.FASHION ? item[gender] : item.data"
-            :fashionData="fashionData"
-          />
+            :data="activeStep === stepId.FASHION && genderValue ?
+            item[genderValue][index]?.data : item.data"
+          /> -->
+
         </template>
       </div>
-      <!-- <ReportScreen v-if="activeStep===3" :categories="data.categories"
-  /> -->
+       <ReportScreen v-if="activeStep>stepId.FASHION" :categories="data.categories"/>
       <div
-        v-if="!displayGenderScreen"
+        v-if="!displayGenderScreen && activeStep <= stepId.FASHION"
         class="welcome-content__button"
         :class="{ 'welcome-content__button--white': activeStep > stepId.START }"
       >
@@ -56,14 +72,13 @@
             @click="startQuiz"
             :disabled="
               activeStep > stepId.START &&
-              activeStep <= stepId.CARS &&
               !isItemSelected
             "
             :class="{
               'welcome-content__button--txtColor':
                 activeStep > stepId.START && activeStep <= stepId.CARS,
             }"
-            :style="{ genderBtnColor: genderBtnColor }"
+            :style="{ backgroundColor: btnColor }"
           >
             {{ activeStep ? text : text }}
           </button>
@@ -72,7 +87,7 @@
           class="welcome-content__screens"
           v-if="activeStep !== stepId.START"
         >
-          {{ activeStep }} of {{ Object.keys(data.screens).length }}
+          <b>{{ activeStep }}</b> of <b>{{ Object.keys(data.screens).length }}</b>
         </span>
       </div>
     </main>
@@ -80,16 +95,24 @@
 </template>
 
 <script setup>
-import { computed, ref, watchEffect, defineProps } from "vue";
+import { computed, ref, watchEffect } from "vue";
 import { useStore } from "vuex";
 import AppScreens from "./components/AppScreens.vue";
 import data from "@/assets/data.json";
-defineProps({
-  gender: Array,
-});
-const gender = ref([
-  { id: 1, image: "/svg/icons/gender_male.svg", text: "Male" },
-  { id: 2, image: "/svg/icons/gender_female.svg", text: "Female" },
+
+const genderSelect = ref([
+  {
+    id: 1,
+    image: "/svg/icons/gender_male.svg",
+    text: "Male",
+    value: "male"
+  },
+  {
+    id: 2,
+    image: "/svg/icons/gender_female.svg",
+    text: "Female",
+    value: "female",
+  },
 ]);
 const store = useStore();
 
@@ -119,6 +142,7 @@ const stepId = {
   PROPERTY: 1,
   CARS: 2,
   FASHION: 3,
+  REPORT:4
 };
 
 watchEffect(() => {
@@ -144,8 +168,10 @@ const category = ref([
     id: 3,
     image: "/svg/logos/fashion_fit.svg",
     text: "Select Outfit",
-    btnColor: "#C5E6F9",
   },
+  {
+    id:4,
+  }
 ]);
 
 const header = computed(() => {
@@ -163,8 +189,11 @@ const text = computed(() => {
 });
 
 const bgColor = computed(() => {
-  if (activeStep.value === stepId.FASHION && genderBgColor.value) {
-    return genderBgColor.value;
+  if (genderValue.value === "male") {
+    return "#C5E6F9";
+  }
+ else if (genderValue.value === "female") {
+    return "#F5DDFDB0";
   }
   const currentScreen = screens.value.find(
     (screen) => screen.id === activeStep.value
@@ -177,28 +206,19 @@ const updateColor = () => {
 };
 
 const btnColor = computed(() => {
-  // if(activeStep.value===stepId.FASHION && genderBtnColor.value) {
-  //    return genderBtnColor.value;
-  //  }
+  if (genderValue.value === "male") {
+    return "#C5E6F9";
+  } else if (genderValue.value === "female") {
+    return "#F5DDFDB0";
+  }
+
   const currentScreen = category.value.find(
     (screen) => screen.id === activeStep.value
   );
   return currentScreen ? currentScreen.btnColor : "#ffffff";
-});
-
-const updateBtnColor = () => {
-  document
-    .getElementById("start")
-    .style.setProperty("--btnColor", btnColor.value);
-};
-
-console.log(data.screens.fashion.male, "fashion-male");
-console.log(data.screens.fashion.female, "fashion-female");
-
-//const gender = ref("");
+  });
 
 const displayGenderScreen = ref(false);
-
 const startQuiz = () => {
   if (store.state.currentSelectedItem) {
     store.dispatch("UPDATE_SELECTED_ITEMS", store.state.currentSelectedItem);
@@ -209,40 +229,26 @@ const startQuiz = () => {
     displayGenderScreen.value = true;
   }
 
-  console.log(displayGenderScreen.value, "gendderr");
+  console.log(displayGenderScreen.value, "gendderr display screen");
   store.dispatch("UPDATE_STEP", activeStep.value + 1);
 
-  if (activeStep.value > stepId.FASHION) {
-    store.dispatch("UPDATE_STEP", stepId.START);
-  }
-
   updateColor();
-  updateBtnColor();
 };
 
-const genderBgColor = ref(null);
+//const genderValue = computed(()=>store.getters.genderValue);
+const genderValue = ref("");
 
-// const fashionMale = () => {
-//   genderBgColor.value="#6AC0F063";
-//   displayGenderScreen.value = false;
+console.log(data.screens.fashion.male, "fashion-male");
+console.log(data.screens.fashion.female, "fashion-female");
 
-//   store.dispatch("UPDATE_STEP", activeStep.value);
-//   updateColor();
+const fashionGender = (selectedGender) => {
+  genderValue.value = selectedGender;
+  console.log(genderValue.value,':selected gender')
 
-//   console.log(displayGenderScreen.value,'gender male')
-// };
-
-const fashionGender = () => {
-  // gender.value==="male" ? data.screens.fashion.male : data.screens.fashion.female;
-  // if(gender.value==="male"){
-  //   genderBgColor.value="#6AC0F063";
-  // }
-  // else {
-  genderBgColor.value = "#F4EFFB";
-  //}
   displayGenderScreen.value = false;
 
   store.dispatch("UPDATE_STEP", activeStep.value);
+
   updateColor();
 
   console.log(displayGenderScreen.value, "gender female");
@@ -302,7 +308,6 @@ body {
 
 .welcome-content__screens {
   font-size: 20px;
-  font-weight: 700;
   line-height: 27.28px;
   letter-spacing: -0.3px;
   flex-basis: 30%;
@@ -326,8 +331,8 @@ body {
   background-color: black;
   border: 1px solid black;
   border-radius: 20px;
-  padding-top: 20px;
-  padding-bottom: 20px;
+  padding-top: 12px;
+  padding-bottom: 12px;
   display: flex;
 }
 
