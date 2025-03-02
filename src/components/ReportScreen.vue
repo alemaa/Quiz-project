@@ -17,15 +17,22 @@
         <div class="report-price">
             <div class="report-price__property">
                 <strong>
-                    <p v-if="selectedItems">${{selectedItems?.options?.price?.weekly_value }}</p>
+                    <p>${{propertyPrice}}</p>
                 </strong>
                 <img src="/images/details_icon.svg">
             </div>
             <div class="report-price__car">
                 <strong>
-                    <p v-if="selectedItems">${{selectedItems?.options?.price?.value }}</p>
+                    <p>${{carPrice}}</p>
                 </strong>
                 <img src="/images/details_icon.svg">
+            </div>
+
+            <div class="report-price__car">
+                <strong>
+                    <p>${{fashionPrice}}</p>
+                </strong>
+                <img src="/images/details_icon.svg" >
             </div>
         </div>
     </div>
@@ -35,13 +42,9 @@
 import { computed, defineProps } from "vue";
 import { useStore } from "vuex";
 
-const editProperty =()=>{
-  store.commit('SET_ACTIVE_STEP',1)
-}
+const store = useStore();
 
-const editCar =() =>{
-  store.commit('SET_ACTIVE_STEP',2)
-}
+const activeStep = computed (() => store.getters.activeStep);
 
 defineProps({
   categories: {
@@ -50,11 +53,13 @@ defineProps({
   }
 });
 
-const store = useStore();
-const selectedItems=computed(()=>store.getters.selectedItems);
-const totalPrice = computed(() => {
-  return (selectedItems?.value.options?.price?.weekly_value || 0);
-});
+const editProperty =()=>{
+  store.commit('SET_ACTIVE_STEP', activeStep.value - 3)
+}
+
+const editCar =() =>{
+  store.commit('SET_ACTIVE_STEP',activeStep.value - 2)
+}
 </script>
 
 <style>

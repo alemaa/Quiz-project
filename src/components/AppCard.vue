@@ -12,7 +12,7 @@
         :style="{ '--checkmark-color': checkmarkColor }"
       >
         <img
-          class="check-icon"
+          class="check-icon" 
           src="/svg/icons/icon-checkmark.svg"
           alt="checkmark icon"
         />
@@ -134,13 +134,18 @@ const isOpen = ref(false);
 const show = () => {
   isOpen.value = !isOpen.value;
 };
-
+const genderValue=computed (()=>store.getters.genderValue);
 const checkmarkColor = computed(() => {
   if (activeStep.value - 1 === props?.data?.category_id) {
     return props?.data?.category_id === 1 ? "#0695D3" : "#BE1E2D";
   }
   else if(activeStep.value===3) {
+    if(genderValue.value==="male"){
     return "#C5E6F9";
+    }
+    else {
+      return "#F5DDFDB0"
+    }
   }
   return "#BE1E2D";
 });

@@ -5,7 +5,8 @@ const store = createStore ({
         activeStep: 0,
         selectedItems:[] as {id:Number}[],
         currentSelectedItem:null,
-        genderValue:null,
+        genderValue:"",
+        displayGenderScreen:false
     },
 
     mutations: {
@@ -22,8 +23,11 @@ const store = createStore ({
                 console.log(state.selectedItems, 'state selected items');
             }
         },
-        SET_GENDER_VALUE(state,gender){
-            state.genderValue=gender
+        SET_GENDER(state, gender) {
+            state.genderValue = gender; 
+        },
+        SET_GENDER_SCREEN(state,genderScreen){
+            state.displayGenderScreen = genderScreen;
         }
     },
 
@@ -34,8 +38,11 @@ const store = createStore ({
         UPDATE_SELECTED_ITEMS({commit},item){
             commit('SET_SELECTED_ITEMS',item)
         },
-        UPDATE_GENDER_VALUE({commit},gender){
-            commit('SET_GENDER_VALUE',gender)
+        UPDATE_GENDER({commit},gender) {
+            commit('SET_GENDER',gender)
+        },
+        UPDATE_GENDER_SCREEN({commit},genderScreen) {
+            commit('SET_GENDER_SCREEN',genderScreen)
         }
     },
 
@@ -43,7 +50,8 @@ const store = createStore ({
         activeStep:(state)=>state.activeStep,
         selectedItems:(state) => state.selectedItems,
         currentSelectedItem:(state)=>state.currentSelectedItem,
-        genderValue:(state)=>state.genderValue
+        genderValue:(state)=>state.genderValue,
+        displayGenderScreen:(state)=>state.displayGenderScreen
     }
 })
 

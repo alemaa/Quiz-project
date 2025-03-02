@@ -1,5 +1,5 @@
 <template>
-    <div class="cards" :class="{'cards-fashion' :activeStep===3}">
+    <div class="cards" :class="{'cards-fashion' :activeStep===3 && !displayGenderScreen}">
         <AppCard  v-for ="(item,index) in data" :key="index"
            :data="item"
         />
@@ -12,7 +12,7 @@ import AppCard from './AppCard.vue';
 import { onMounted,defineProps, watch, computed } from 'vue';
 
 const activeStep = computed (() =>store.getters.activeStep);
-
+const displayGenderScreen=computed(()=>store.getters.displayGenderScreen);
 const props = defineProps({
   data: {
     type: Object,
@@ -41,6 +41,10 @@ watch(()=>props.data, () => {
     display: flex;
     gap: 30px;
     flex-wrap: wrap;
+  }
+  
+  .cards-fashion {
+    justify-content: center;
   }
 }
 </style>

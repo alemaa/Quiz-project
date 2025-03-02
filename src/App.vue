@@ -10,7 +10,7 @@
   </head>
   <div class="welcome-content">
     <main>
-      <img :src="header" />
+      <img :src="header" v-if="activeStep < stepId.REPORT" />
       <div class="welcome-content__description">
         <div v-if="activeStep === stepId.START">
           {{ description }}
@@ -35,7 +35,7 @@
       </div>
       <div>
         <template v-for="(item, index) in Object.values(data.screens)" :key="index">
-          <!-- try to optimize this with the computed and formatting data, instead of two v-for -->
+          <!-- try to optimize this with the computed and formatting data, instead of two v-for  -->
            <template v-if="activeStep === item.screen_id">
              <template v-if="activeStep === stepId.FASHION && genderValue">
               <AppScreens
@@ -51,7 +51,6 @@
               />
            </template>
 
-
           <!-- <AppScreens
             v-if="activeStep === item.screen_id"
             :data="activeStep === stepId.FASHION && genderValue ?
@@ -60,7 +59,7 @@
 
         </template>
       </div>
-       <ReportScreen v-if="activeStep>stepId.FASHION" :categories="data.categories"/>
+       <ReportScreen v-if="activeStep===stepId.REPORT" :categories="data.categories"/>
       <div
         v-if="!displayGenderScreen && activeStep <= stepId.FASHION"
         class="welcome-content__button"
@@ -99,6 +98,7 @@ import { computed, ref, watchEffect } from "vue";
 import { useStore } from "vuex";
 import AppScreens from "./components/AppScreens.vue";
 import data from "@/assets/data.json";
+import ReportScreen from "./components/ReportScreen.vue";
 
 const genderSelect = ref([
   {
@@ -130,12 +130,6 @@ const descriptionTwo = `It was popularised in the 1960s with the release of Letr
 
 const fasionDescription = `Please choose your gender to proceed:`;
 
-// const fashionData = computed (() => {
-//   if(gender.value) {
-//     return gender.value==="male" ? data.screens.fashion.male : data.screens.fashion.female;
-//   }
-//   return [];
-// })
 
 const stepId = {
   START: 0,
@@ -169,9 +163,6 @@ const category = ref([
     image: "/svg/logos/fashion_fit.svg",
     text: "Select Outfit",
   },
-  {
-    id:4,
-  }
 ]);
 
 const header = computed(() => {
@@ -218,7 +209,8 @@ const btnColor = computed(() => {
   return currentScreen ? currentScreen.btnColor : "#ffffff";
   });
 
-const displayGenderScreen = ref(false);
+const displayGenderScreen = computed (()=>store.getters.displayGenderScreen);
+
 const startQuiz = () => {
   if (store.state.currentSelectedItem) {
     store.dispatch("UPDATE_SELECTED_ITEMS", store.state.currentSelectedItem);
@@ -226,7 +218,7 @@ const startQuiz = () => {
   store.state.currentSelectedItem = null;
 
   if (activeStep.value === stepId.CARS && !displayGenderScreen.value) {
-    displayGenderScreen.value = true;
+    store.dispatch("UPDATE_GENDER_SCREEN", true);
   }
 
   console.log(displayGenderScreen.value, "gendderr display screen");
@@ -235,17 +227,16 @@ const startQuiz = () => {
   updateColor();
 };
 
-//const genderValue = computed(()=>store.getters.genderValue);
-const genderValue = ref("");
+const genderValue = computed (() =>store.getters.genderValue);
 
 console.log(data.screens.fashion.male, "fashion-male");
 console.log(data.screens.fashion.female, "fashion-female");
 
 const fashionGender = (selectedGender) => {
-  genderValue.value = selectedGender;
+  store.dispatch("UPDATE_GENDER",selectedGender)
   console.log(genderValue.value,':selected gender')
 
-  displayGenderScreen.value = false;
+  store.dispatch("UPDATE_GENDER_SCREEN", false);
 
   store.dispatch("UPDATE_STEP", activeStep.value);
 
