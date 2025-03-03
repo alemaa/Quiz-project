@@ -1,5 +1,5 @@
 <template>
-  <div class="card-content">
+  <div class="card-content" :class="{'card-content__fashion' : activeStep === 3}">
     <div
       class="card-content__img"
       :class="{ selected: isSelected }"
@@ -9,20 +9,31 @@
       <div
         v-if="isSelected"
         class="check"
+        :class="{ 'check-icon-fashion': activeStep === 3 }"
         :style="{ '--checkmark-color': checkmarkColor }"
       >
-        <img
-          class="check-icon" 
-          src="/svg/icons/icon-checkmark.svg"
-          alt="checkmark icon"
-        />
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 48 48"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M44.207 0.931195C43.361 0.459557 42.4305 0.159624 41.4688 0.0485495C40.507 -0.062525 39.5328 0.017437 38.6019 0.283864C37.671 0.55029 36.8017 0.997956 36.0436 1.60126C35.2855 2.20456 34.6535 2.95166 34.1839 3.79985L20.5016 28.4695L12.671 20.6241C11.9912 19.9189 11.178 19.3564 10.2788 18.9694C9.37963 18.5824 8.41255 18.3787 7.43397 18.3702C6.4554 18.3616 5.48493 18.5485 4.57919 18.9197C3.67345 19.291 2.85059 19.8393 2.1586 20.5326C1.46662 21.2259 0.91938 22.0503 0.548814 22.9578C0.178247 23.8652 -0.00822528 24.8375 0.000278264 25.818C0.00878181 26.7984 0.212091 27.7673 0.598342 28.6682C0.984592 29.5691 1.54605 30.3838 2.24995 31.065L16.9898 45.8328C18.3827 47.2321 20.2621 48 22.2004 48L23.2211 47.9262C24.3507 47.7678 25.4283 47.349 26.3689 46.7026C27.3095 46.0562 28.0875 45.1998 28.6417 44.201L47.0665 10.9733C47.5369 10.1258 47.8361 9.19383 47.947 8.2305C48.0578 7.26716 47.9782 6.29139 47.7127 5.35888C47.4472 4.42637 47.0009 3.5554 46.3994 2.79569C45.7979 2.03599 45.0529 1.40243 44.207 0.931195V0.931195Z"
+            fill="currentColor"
+          />
+        </svg>
       </div>
       <div class="card-content__location" v-if="data?.options?.info?.exists">
         <img class="cars-image" :src="data?.options.info?.icon?.filename" />
         <p>{{ data?.options.info?.text }}</p>
       </div>
     </div>
-    <div class="card-content__description" :class="{'card-fashion':activeStep === 3}">
+    <div
+      class="card-content__description"
+      :class="{ 'card-description__fashion': activeStep === 3 }"
+    >
       <div class="card-content__left-side">
         <h1 class="card-content__title">
           {{ data?.name }}
@@ -77,8 +88,12 @@
             <p v-if="activeStep === 1">
               ${{ data?.options?.price?.weekly_value }}<span> per week</span>
             </p>
-            <p v-else-if="activeStep === 2">${{ data?.options?.price?.value }}</p>
-            <p v-if="activeStep===3" class="price-fashion">${{ data?.price }}</p>
+            <p v-else-if="activeStep === 2">
+              ${{ data?.options?.price?.value }}
+            </p>
+            <p v-if="activeStep === 3" class="price-fashion">
+              ${{ data?.price }}
+            </p>
           </strong>
           <div
             class="card-content__tooltip"
@@ -90,9 +105,9 @@
       </div>
 
       <div class="tooltip__open" v-if="isOpen">
-      <div>
-        <hr>
-      </div>
+        <div>
+          <hr />
+        </div>
         <div
           class="tooltip__item"
           v-for="(item, key) in data?.options.tooltip.data"
@@ -101,8 +116,7 @@
           <span class="tooltip__name">{{ item.name }} </span>
           <strong>
             <span class="tooltip_value">$ {{ item.value }}</span>
-          </strong
-          >
+          </strong>
         </div>
       </div>
     </div>
@@ -134,17 +148,17 @@ const isOpen = ref(false);
 const show = () => {
   isOpen.value = !isOpen.value;
 };
-const genderValue=computed (()=>store.getters.genderValue);
+
+const genderValue = computed(() => store.getters.genderValue);
+
 const checkmarkColor = computed(() => {
   if (activeStep.value - 1 === props?.data?.category_id) {
     return props?.data?.category_id === 1 ? "#0695D3" : "#BE1E2D";
-  }
-  else if(activeStep.value===3) {
-    if(genderValue.value==="male"){
-    return "#C5E6F9";
-    }
-    else {
-      return "#F5DDFDB0"
+  } else if (activeStep.value === 3) {
+    if (genderValue.value === "male") {
+      return "#C5E6F9";
+    } else {
+      return "#F5DDFDB0";
     }
   }
   return "#BE1E2D";
@@ -160,11 +174,11 @@ const props = defineProps({
   selected: {
     type: Boolean,
     default: false,
-  }
+  },
 });
 
 interface AppCard {
-  price:number;
+  price: number;
   id: string;
   name: string;
   description: string;
@@ -221,6 +235,10 @@ interface AppCard {
   margin-bottom: 20px;
 }
 
+.card-content__fashion {
+  padding: 10px;
+}
+
 .tooltip__open {
   display: flex;
   flex-wrap: wrap;
@@ -248,6 +266,19 @@ interface AppCard {
 
 .check-icon {
   width: 50px;
+}
+
+.check {
+  color:white;
+}
+
+.check svg {
+  width: 50px;
+  height: 50px;
+}
+
+.check-icon-fashion {
+  color: #756b6b;
 }
 
 .card-content__img {
@@ -296,8 +327,8 @@ interface AppCard {
   margin-top: -30px;
 }
 
-.card-fashion {
- margin-top: 0;
+.card-description__fashion {
+  margin-top: 0;
 }
 
 .right-side {

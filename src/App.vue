@@ -180,8 +180,11 @@ const text = computed(() => {
 });
 
 const bgColor = computed(() => {
+  if(activeStep.value === stepId.REPORT){
+    return "#C6D9F3";
+  }
   if (genderValue.value === "male") {
-    return "#C5E6F9";
+    return "#6AC0F063";
   }
  else if (genderValue.value === "female") {
     return "#F5DDFDB0";

@@ -32,7 +32,7 @@ watch(()=>props.data, () => {
 <style>
 .cards-fashion {
   background-color: white;
-  padding-top: 50px;
+  padding-top: 30px;
   border-radius: 20px;
 }
 
@@ -42,7 +42,7 @@ watch(()=>props.data, () => {
     gap: 30px;
     flex-wrap: wrap;
   }
-  
+
   .cards-fashion {
     justify-content: center;
   }

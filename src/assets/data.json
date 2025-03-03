@@ -4,18 +4,22 @@
       "id": 1,
       "name": "Housing",
       "color": "#F9EDED",
-      "icon":"/images/house.svg"
+      "icon":"/images/house.svg",
+      "iconEdit":"/images/edit_icon.svg"
     },
     {
       "id": 2,
       "name": "Car",
       "color": "#F8FBFF",
-      "icon":"/images/car.svg"
+      "icon":"/images/car.svg",
+      "iconEdit":"/images/edit_icon.svg"
     },
     {
       "id": 3,
       "name": "Clothing",
-      "color": "#EFF5FB"
+      "color": "#EFF5FB",
+      "icon":"/images/clothing.svg",
+      "iconEdit":"/images/edit_icon.svg"
     }
   ],
   "screens": {
