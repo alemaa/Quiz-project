@@ -3,52 +3,50 @@
 
   <div class="report-content">
     <div class="report-categories">
-      <div v-for="(category, index) in categories" :key="index" class="category-content">
+      <div
+        v-for="(category, index) in categories"
+        :key="index"
+        class="category-content"
+        :class="{ border: isOpen[index] }"
+      >
         <div class="category-icon">
-          <img :src="category?.icon" alt="icon" />
-          <p>{{ category.name }}</p>
-          <img :src="category?.iconEdit" alt="icon edit" />
+          <div class="category-icon__background">
+            <img :src="category?.icon" alt="icon" />
+          </div>
+          <p class="category-icon__name">{{ category.name }}</p>
+          <img :src="category?.iconEdit" alt="icon edit" @click="edit" />
         </div>
         <div class="price-details">
           <strong
             ><p>
-              {{
+              ${{
                 selectedItems[index]?.options?.price?.weekly_value ||
                 selectedItems[index]?.options?.price?.value ||
                 selectedItems[index]?.price
               }}
             </p></strong
           >
-          <img src="/images/details_icon.svg" @click="show" />
+          <img
+            src="/images/details_icon.svg"
+            @click="show(index)"
+            class="show-details"
+          />
         </div>
-        <div class="info-open" v-if="isOpen">
+
+        <div class="info-open" v-if="isOpen[index]">
           <div
-            class="tooltip__item"
+            class="info-item"
             v-for="(item, index) in selectedItems[index]?.options?.tooltip
               ?.data"
             :key="index"
           >
-            <span> {{ item.name }} </span>
-            <span>{{ item.value }} </span>
+            <span class="info-item__name"> {{ item.name }} </span>
+            <span class="separator"></span>
+            <span class="info-item__value">${{ item.value }} </span>
           </div>
         </div>
       </div>
     </div>
-
-    <!-- <div
-        class="report-categories"
-        v-for="(item, index) in selectedItems"
-        :key="index"
-      >
-      {{ item?.options?.price?.weekly_value ||
-         item?.options?.price?.value || item?.price }} -->
-
-    <!-- <div class="info-open" v-if="isOpen">
-        <div class="info-item" v-for="(item, key) in toolTipData" :key="key">
-          <span class="info__name">{{ item.name }}</span>
-          <span class="info_value">$ {{ item.value }}</span>
-        </div>
-      </div> -->
   </div>
 </template>
 
@@ -59,64 +57,70 @@ import { useStore } from "vuex";
 const store = useStore();
 const selectedItems = computed(() => store.getters.selectedItems);
 
-defineProps({
+ defineProps({
   categories: {
     type: Object,
     required: true,
   },
 });
 
-const show = () => {
-  isOpen.value = !isOpen.value;
+const isOpen = ref([]);
+
+const show = (index) => {
+  isOpen.value[index] = !isOpen.value[index];
 };
 
-const isOpen = ref(false);
+const totalPrice = computed(() => {
+  return selectedItems.value
+    .reduce((sum, item) => {
+      const price =
+        item?.options?.price?.weekly_value ||
+        item?.options?.price?.value ||
+        item?.price ||
+        0;
+      return sum + price;
+    }, 0)
+    .toFixed(2);
+});
 
-// const toolTipData = computed(() => {
-//   const info = selectedItems.value.find((item) => item.category_id === 0);
-//   return info?.options?.tooltip?.data || 0;
-// });
+//const activeStep = computed(() => store.getters.activeStep);
 
-// const infoCar = computed(() => {
-//   const infoCar = selectedItems.value.find((item) => item.category_id === 0);
-//   return infoCar?.options?.tooltip?.data || 0;
-// });
+const edit = () => {
 
-//const toolTipData = ref([{ info: infoProperty }, { info: infoCar }]);
+  store.commit("SET_ACTIVE_STEP",1)
 
-// const propertyPrice = computed(() => {
-//   const property = selectedItems.value.find((item) => item.category_id === 0);
-//   return property?.options?.price?.weekly_value || 0;
-// });
-
-// console.log(propertyPrice,'price')
-// console.log(propertyPrice.value,'property price')
-
-// const carPrice = computed(() => {
-//   const car = selectedItems.value.find((item) => item.category_id === 1);
-//   return car?.options?.price?.value || 0;
-// });
-
-// const fashionPrice = computed(() => {
-//   const fashion = selectedItems.value.find((item) => item.category_id === 2);
-//   return fashion?.price || 0;
-// });
-
-// const report = ref([
-//   { price: propertyPrice, image: "/images/details_icon.svg" },
-//   { price: carPrice, image: "/images/details_icon.svg" },
-//   { price: fashionPrice, image: "/images/details_icon.svg" },
-// ]);
-
-// const totalPrice = computed(() => {
-//   return parseFloat(propertyPrice.value + carPrice.value).toFixed(2) || 0;
-// });
+};
 </script>
 
 <style>
 .report-content {
-  display: flex;
   border-radius: 10px;
+  min-height: 514px;
+}
+
+.separator {
+  margin-left: 10px;
+  border-bottom: 1px dotted black;
+  color: #14365680;
+  flex: 2;
+}
+
+.info-item__name {
+  flex: 1;
+}
+
+.info-item__value {
+  flex: 1;
+}
+
+.category-icon__background {
+  color: rgb(101, 188, 191);
+  background-color: rgba(101, 188, 191, 0.1);
+  border-radius: 50px;
+}
+
+.show-details {
+  cursor: pointer;
 }
 
 .price-details {
@@ -125,6 +129,7 @@ const isOpen = ref(false);
   justify-content: flex-end;
   gap: 5px;
   flex: 1;
+  padding-right: 10px;
 }
 
 .category-icon {
@@ -132,6 +137,15 @@ const isOpen = ref(false);
   align-items: center;
   gap: 10px;
   flex: 1;
+  padding-left: 10px;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 21.82px;
+}
+
+.category-icon__name {
+  color: #143656;
+  opacity: 0.8;
 }
 
 .tooltip__item {
@@ -144,18 +158,25 @@ const isOpen = ref(false);
   align-items: center;
   gap: 30px;
   flex-wrap: wrap;
+  border-bottom: 1px solid gray;
+}
+
+.border {
+  border-bottom: none;
 }
 
 .info-open {
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: column;
   width: 100%;
-  justify-content: space-between;
+  margin-top: -30px;
+  border-top: 1px solid gray;
 }
 
 .info-item {
   display: flex;
-  justify-content: space-between;
+  color: #143656;
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 15px;
+  align-items: center;
 }
 </style>

@@ -6,7 +6,14 @@ const store = createStore ({
         selectedItems:[] as {id:Number}[],
         currentSelectedItem:null,
         genderValue:"",
-        displayGenderScreen:false
+        displayGenderScreen:false,
+        stepId : {
+            START:0,
+            PROPERTY:1,
+            CARS:2,
+            FASHION:3,
+            REPORT:4
+        }
     },
 
     mutations: {
@@ -24,7 +31,7 @@ const store = createStore ({
             }
         },
         SET_GENDER(state, gender) {
-            state.genderValue = gender; 
+            state.genderValue = gender;
         },
         SET_GENDER_SCREEN(state,genderScreen){
             state.displayGenderScreen = genderScreen;
@@ -51,7 +58,8 @@ const store = createStore ({
         selectedItems:(state) => state.selectedItems,
         currentSelectedItem:(state)=>state.currentSelectedItem,
         genderValue:(state)=>state.genderValue,
-        displayGenderScreen:(state)=>state.displayGenderScreen
+        displayGenderScreen:(state)=>state.displayGenderScreen,
+        stepId:(state)=>state.stepId
     }
 })
 

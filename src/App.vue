@@ -8,8 +8,8 @@
     />
     <meta charset="UTF-8" />
   </head>
-  <div class="welcome-content">
     <main>
+      <div class="welcome-content">
       <img :src="header" v-if="activeStep < stepId.REPORT" />
       <div class="welcome-content__description">
         <div v-if="activeStep === stepId.START">
@@ -89,8 +89,8 @@
           <b>{{ activeStep }}</b> of <b>{{ Object.keys(data.screens).length }}</b>
         </span>
       </div>
+    </div>
     </main>
-  </div>
 </template>
 
 <script setup>
@@ -130,14 +130,7 @@ const descriptionTwo = `It was popularised in the 1960s with the release of Letr
 
 const fasionDescription = `Please choose your gender to proceed:`;
 
-
-const stepId = {
-  START: 0,
-  PROPERTY: 1,
-  CARS: 2,
-  FASHION: 3,
-  REPORT:4
-};
+const stepId = computed(() =>store.getters.stepId);
 
 watchEffect(() => {
   console.log("Selected Items:", selectedItems.value);
@@ -180,7 +173,7 @@ const text = computed(() => {
 });
 
 const bgColor = computed(() => {
-  if(activeStep.value === stepId.REPORT){
+  if(activeStep.value === stepId.value.REPORT){
     return "#C6D9F3";
   }
   if (genderValue.value === "male") {
@@ -220,7 +213,7 @@ const startQuiz = () => {
   }
   store.state.currentSelectedItem = null;
 
-  if (activeStep.value === stepId.CARS && !displayGenderScreen.value) {
+  if (activeStep.value === stepId.value.CARS && !displayGenderScreen.value) {
     store.dispatch("UPDATE_GENDER_SCREEN", true);
   }
 
@@ -240,7 +233,6 @@ const fashionGender = (selectedGender) => {
   console.log(genderValue.value,':selected gender')
 
   store.dispatch("UPDATE_GENDER_SCREEN", false);
-
   store.dispatch("UPDATE_STEP", activeStep.value);
 
   updateColor();
@@ -278,6 +270,7 @@ watchEffect(() => {
 .gender-icons {
   background-color: #eff5fb;
   border: #eff5fb;
+  cursor: pointer;
 }
 
 .gender {
@@ -296,8 +289,6 @@ body {
   padding: 0 20px;
   margin: 0 auto;
   font-family: "Nunito";
-  display: flex;
-  justify-content: center;
 }
 
 .welcome-content__screens {
@@ -351,6 +342,7 @@ body {
   border-radius: 10px;
   border: 2px;
   background-color: var(--btnColor);
+  cursor: pointer;
 }
 
 #start:disabled {

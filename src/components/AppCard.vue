@@ -1,5 +1,8 @@
 <template>
-  <div class="card-content" :class="{'card-content__fashion' : activeStep === 3}">
+  <div
+    class="card-content"
+    :class="{ 'card-content__fashion':activeStep === stepId.FASHION }"
+  >
     <div
       class="card-content__img"
       :class="{ selected: isSelected }"
@@ -9,7 +12,7 @@
       <div
         v-if="isSelected"
         class="check"
-        :class="{ 'check-icon-fashion': activeStep === 3 }"
+        :class="{ 'check-icon-fashion': activeStep === stepId.FASHION }"
         :style="{ '--checkmark-color': checkmarkColor }"
       >
         <svg
@@ -32,7 +35,7 @@
     </div>
     <div
       class="card-content__description"
-      :class="{ 'card-description__fashion': activeStep === 3 }"
+      :class="{ 'card-description__fashion': activeStep === stepId.FASHION }"
     >
       <div class="card-content__left-side">
         <h1 class="card-content__title">
@@ -85,13 +88,13 @@
       <div class="right-side">
         <div class="card-content__price">
           <strong>
-            <p v-if="activeStep === 1">
+            <p v-if="activeStep === stepId.PROPERTY">
               ${{ data?.options?.price?.weekly_value }}<span> per week</span>
             </p>
-            <p v-else-if="activeStep === 2">
+            <p v-else-if="activeStep === stepId.CARS">
               ${{ data?.options?.price?.value }}
             </p>
-            <p v-if="activeStep === 3" class="price-fashion">
+            <p v-if="activeStep === stepId.FASHION" class="price-fashion">
               ${{ data?.price }}
             </p>
           </strong>
@@ -130,6 +133,8 @@ const store = useStore();
 
 const activeStep = computed(() => store.getters.activeStep);
 
+const stepId = computed(() => store.getters.stepId);
+
 const isSelected = computed(
   () => store.state.currentSelectedItem?.id === props.data?.id
 );
@@ -154,7 +159,7 @@ const genderValue = computed(() => store.getters.genderValue);
 const checkmarkColor = computed(() => {
   if (activeStep.value - 1 === props?.data?.category_id) {
     return props?.data?.category_id === 1 ? "#0695D3" : "#BE1E2D";
-  } else if (activeStep.value === 3) {
+  } else if (activeStep.value === stepId.value.FASHION) {
     if (genderValue.value === "male") {
       return "#C5E6F9";
     } else {
@@ -236,20 +241,16 @@ interface AppCard {
 }
 
 .card-content__fashion {
-  padding: 10px;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 .tooltip__open {
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: column;
   width: 100%;
-  justify-content: space-between;
 }
 
 .tooltip__item {
   display: flex;
-  justify-content: space-between;
 }
 
 .card-content__star {
@@ -269,7 +270,7 @@ interface AppCard {
 }
 
 .check {
-  color:white;
+  color: white;
 }
 
 .check svg {
@@ -285,6 +286,7 @@ interface AppCard {
   display: flex;
   flex-direction: column;
   position: relative;
+  cursor: pointer;
 }
 
 .card-content__location {
@@ -427,8 +429,9 @@ interface AppCard {
 }
 
 .price-fashion {
-  display: flex;
+  margin-top: -20px;
 }
+
 @media (min-width: 480px) {
   .card-content {
     display: flex;
