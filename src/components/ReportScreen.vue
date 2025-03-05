@@ -86,9 +86,7 @@ const totalPrice = computed(() => {
 //const activeStep = computed(() => store.getters.activeStep);
 
 const edit = () => {
-
   store.commit("SET_ACTIVE_STEP",1)
-
 };
 </script>
 

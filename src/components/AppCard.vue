@@ -1,14 +1,18 @@
 <template>
   <div
     class="card-content"
-    :class="{ 'card-content__fashion':activeStep === stepId.FASHION }"
+    :class="{
+      'card-content__fashion': activeStep === stepId.FASHION,
+      'selected': isSelected,
+    }"
+     @click="activeStep === stepId.FASHION && selection()"
   >
     <div
       class="card-content__img"
       :class="{ selected: isSelected }"
       @click="selection"
     >
-      <img class="property-image" :src="data?.thumbnail?.filename" />
+      <img class="card-image" :src="data?.thumbnail?.filename" />
       <div
         v-if="isSelected"
         class="check"
@@ -129,21 +133,44 @@
 <script setup lang="ts">
 import { computed, defineProps, PropType, ref } from "vue";
 import { useStore } from "vuex";
+import dataApp from "@/assets/data.json";
+
+// data.screens.fashion.male.find(el => el.data.find(item => item.id === props.id))
+
 const store = useStore();
-
 const activeStep = computed(() => store.getters.activeStep);
-
 const stepId = computed(() => store.getters.stepId);
 
-const isSelected = computed(
-  () => store.state.currentSelectedItem?.id === props.data?.id
-);
+const isSelected = computed(() => {
+  if (activeStep.value === stepId.value.FASHION) {
+    return store.state.currentSelectedItem?.id === fashionData.value.data;
+  }
+   else {
+    console.log(store.state.currentSelectedItem,'ffddff');
+    return store.state.currentSelectedItem?.id === props.data?.id;
+  }
+});
+
+const fashionData = computed(() => {
+  const categoryGender = dataApp?.screens?.fashion[genderValue.value];
+  return categoryGender?.find((el) =>
+    el.data.find((item) => item.id === props.data?.id)
+  );
+});
 
 const selection = () => {
-  if (store.state.currentSelectedItem?.id === props.data?.id) {
-    store.state.currentSelectedItem = null;
+  if (activeStep.value === stepId.value.FASHION) {
+    if (store.state.currentSelectedItem?.id === fashionData?.value.id) {
+      store.state.currentSelectedItem = null;
+    } else {
+      store.state.currentSelectedItem = fashionData?.value.data;
+    }
   } else {
-    store.state.currentSelectedItem = props.data;
+    if (store.state.currentSelectedItem?.id === props.data?.id) {
+      store.state.currentSelectedItem = null;
+    } else {
+      store.state.currentSelectedItem = props.data;
+    }
   }
   console.log(store.state.currentSelectedItem, "current");
 };
@@ -160,11 +187,7 @@ const checkmarkColor = computed(() => {
   if (activeStep.value - 1 === props?.data?.category_id) {
     return props?.data?.category_id === 1 ? "#0695D3" : "#BE1E2D";
   } else if (activeStep.value === stepId.value.FASHION) {
-    if (genderValue.value === "male") {
-      return "#C5E6F9";
-    } else {
-      return "#F5DDFDB0";
-    }
+    return "#000000";
   }
   return "#BE1E2D";
 });
@@ -243,6 +266,7 @@ interface AppCard {
 .card-content__fashion {
   padding-left: 10px;
   padding-right: 10px;
+  position: relative;
 }
 
 .tooltip__open {
@@ -257,8 +281,7 @@ interface AppCard {
   color: red;
 }
 
-.cars-image,
-.property-image {
+.card-image {
   border-radius: 20px;
   object-fit: cover;
   width: 100%;
@@ -269,17 +292,9 @@ interface AppCard {
   width: 50px;
 }
 
-.check {
-  color: white;
-}
-
 .check svg {
   width: 50px;
   height: 50px;
-}
-
-.check-icon-fashion {
-  color: #756b6b;
 }
 
 .card-content__img {
@@ -418,9 +433,18 @@ interface AppCard {
   display: flex;
   align-items: center;
   justify-content: center;
+  color: white;
 }
 
 .card-content__img.selected::before {
+  content: "";
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 20px;
+  position: absolute;
+}
+
+.card-content__fashion.selected::after {
   content: "";
   inset: 0;
   background: rgba(0, 0, 0, 0.5);
@@ -436,6 +460,7 @@ interface AppCard {
   .card-content {
     display: flex;
     flex-direction: column;
+    margin-bottom: 20px;
   }
 
   .card-content__description {
