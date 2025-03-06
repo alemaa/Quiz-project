@@ -127,12 +127,16 @@
       </div>
     </div>
   </div>
+  <div v-if="activeStep===stepId.FASHION">Total:{{ totalPrice }}</div>
+
 </template>
 
 <script setup lang="ts">
 import { computed, defineProps, PropType, ref } from "vue";
 import { useStore } from "vuex";
 import dataApp from "@/assets/data.json";
+
+// data.screens.fashion.male.find(el => el.data.find(item => item.id === props.id))
 
 const store = useStore();
 const activeStep = computed(() => store.getters.activeStep);
@@ -144,6 +148,15 @@ const fashionData = computed(() => {
   return categoryGender?.find((el) =>
     el.data.find((item) => item.id === props.data?.id)
   );
+});
+
+const totalPrice = computed(() => {
+  if (fashionData.value) {
+    return fashionData.value.data
+      .filter((item) => item.price)
+      .reduce((sum, item) => sum + item.price, 0);
+  }
+  return 0;
 });
 
 const isSelected = computed(() => {
