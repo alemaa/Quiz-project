@@ -41,6 +41,7 @@
               <AppScreens
                 v-for="(fashion, index) in Object.values(item[genderValue])"
                 :data="fashion.data"
+                :id="fashion.id"
                 :key="index"
               />
             </template>
@@ -115,15 +116,15 @@ const genderSelect = ref([
     value: "female",
   },
 ]);
+
 const store = useStore();
-
 const selectedItems = computed(() => store.getters.selectedItems);
-
 const isItemSelected = computed(() => store.state.currentSelectedItem);
-
 const activeStep = computed(() => store.getters.activeStep);
+const stepId = computed(() =>store.getters.stepId);
+const displayGenderScreen = computed (()=>store.getters.displayGenderScreen);
 
-console.log(data.screens.fashion.male,'idd')
+const screens = ref(data.categories);
 
 const description = `Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text
 ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,
@@ -133,13 +134,9 @@ const descriptionTwo = `It was popularised in the 1960s with the release of Letr
 
 const fasionDescription = `Please choose your gender to proceed:`;
 
-const stepId = computed(() =>store.getters.stepId);
-
 watchEffect(() => {
   console.log("Selected Items:", selectedItems.value);
 });
-
-const screens = ref(data.categories);
 
 const category = ref([
   {
@@ -208,8 +205,6 @@ const btnColor = computed(() => {
   return currentScreen ? currentScreen.btnColor : "#ffffff";
   });
 
-const displayGenderScreen = computed (()=>store.getters.displayGenderScreen);
-
 const startQuiz = () => {
   if (store.state.currentSelectedItem) {
     store.dispatch("UPDATE_SELECTED_ITEMS", store.state.currentSelectedItem);
@@ -227,9 +222,6 @@ const startQuiz = () => {
 };
 
 const genderValue = computed (() =>store.getters.genderValue);
-
-console.log(data.screens.fashion.male, "fashion-male");
-console.log(data.screens.fashion.female, "fashion-female");
 
 const fashionGender = (selectedGender) => {
   store.dispatch("UPDATE_GENDER",selectedGender)

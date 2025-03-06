@@ -51,7 +51,7 @@
 </template>
 
 <script setup>
-import { computed, defineProps, ref } from "vue";
+import { computed, defineProps, ref} from "vue";
 import { useStore } from "vuex";
 
 const store = useStore();
@@ -82,7 +82,6 @@ const totalPrice = computed(() => {
     }, 0)
     .toFixed(2);
 });
-
 //const activeStep = computed(() => store.getters.activeStep);
 
 const edit = () => {

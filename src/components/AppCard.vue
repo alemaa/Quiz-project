@@ -3,14 +3,13 @@
     class="card-content"
     :class="{
       'card-content__fashion': activeStep === stepId.FASHION,
-      'selected': isSelected,
+      selected: isSelected,
     }"
-     @click="activeStep === stepId.FASHION && selection()"
+    @click="selection"
   >
     <div
       class="card-content__img"
       :class="{ selected: isSelected }"
-      @click="selection"
     >
       <img class="card-image" :src="data?.thumbnail?.filename" />
       <div
@@ -135,21 +134,10 @@ import { computed, defineProps, PropType, ref } from "vue";
 import { useStore } from "vuex";
 import dataApp from "@/assets/data.json";
 
-// data.screens.fashion.male.find(el => el.data.find(item => item.id === props.id))
-
 const store = useStore();
 const activeStep = computed(() => store.getters.activeStep);
 const stepId = computed(() => store.getters.stepId);
-
-const isSelected = computed(() => {
-  if (activeStep.value === stepId.value.FASHION) {
-    return store.state.currentSelectedItem?.id === fashionData.value.data;
-  }
-   else {
-    console.log(store.state.currentSelectedItem,'ffddff');
-    return store.state.currentSelectedItem?.id === props.data?.id;
-  }
-});
+const genderValue = computed(() => store.getters.genderValue);
 
 const fashionData = computed(() => {
   const categoryGender = dataApp?.screens?.fashion[genderValue.value];
@@ -158,12 +146,21 @@ const fashionData = computed(() => {
   );
 });
 
+const isSelected = computed(() => {
+  if (activeStep.value === stepId.value.FASHION) {
+    return store.state.currentSelectedItem?.id === fashionData?.value.id;
+  } else {
+    return store.state.currentSelectedItem?.id === props.data?.id;
+  }
+});
+
 const selection = () => {
+  store.dispatch('UPDATE_CURRENT_SELECTED_ITEMS', props.data.id)
   if (activeStep.value === stepId.value.FASHION) {
     if (store.state.currentSelectedItem?.id === fashionData?.value.id) {
       store.state.currentSelectedItem = null;
     } else {
-      store.state.currentSelectedItem = fashionData?.value.data;
+      store.state.currentSelectedItem = fashionData?.value;
     }
   } else {
     if (store.state.currentSelectedItem?.id === props.data?.id) {
@@ -181,7 +178,6 @@ const show = () => {
   isOpen.value = !isOpen.value;
 };
 
-const genderValue = computed(() => store.getters.genderValue);
 
 const checkmarkColor = computed(() => {
   if (activeStep.value - 1 === props?.data?.category_id) {
@@ -203,6 +199,7 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  totalPrice:Number
 });
 
 interface AppCard {
@@ -252,6 +249,7 @@ interface AppCard {
     };
   };
 }
+console.log(props.data,'props app card')
 </script>
 
 <style>
@@ -444,12 +442,8 @@ interface AppCard {
   position: absolute;
 }
 
-.card-content__fashion.selected::after {
-  content: "";
-  inset: 0;
-  background: rgba(0, 0, 0, 0.5);
-  border-radius: 20px;
-  position: absolute;
+.check-icon-fashion {
+  visibility: hidden;
 }
 
 .price-fashion {
