@@ -14,7 +14,7 @@
             <img :src="category?.icon" alt="icon" />
           </div>
           <p class="category-icon__name">{{ category.name }}</p>
-          <img :src="category?.iconEdit" alt="icon edit" @click="edit" />
+          <img :src="category?.iconEdit" alt="icon edit" @click="edit(index)" />
         </div>
         <div class="price-details">
           <strong
@@ -22,7 +22,7 @@
               ${{
                 selectedItems[index]?.options?.price?.weekly_value ||
                 selectedItems[index]?.options?.price?.value ||
-                selectedItems[index]?.price
+                fashionPrice(selectedItems[index]?.data)
               }}
             </p></strong
           >
@@ -56,18 +56,23 @@ import { useStore } from "vuex";
 
 const store = useStore();
 const selectedItems = computed(() => store.getters.selectedItems);
-
- defineProps({
+const activeStep = computed(() =>store.getters.activeStep);
+console.log(activeStep.value,'aktivni stepppppppp')
+ const props=defineProps({
   categories: {
     type: Object,
     required: true,
   },
 });
-
+console.log(props.categories,'cat')
 const isOpen = ref([]);
 
 const show = (index) => {
   isOpen.value[index] = !isOpen.value[index];
+};
+
+const fashionPrice = (data) => {
+return data?.reduce((sum, item)=> sum + (item.price||0),0);
 };
 
 const totalPrice = computed(() => {
@@ -76,22 +81,20 @@ const totalPrice = computed(() => {
       const price =
         item?.options?.price?.weekly_value ||
         item?.options?.price?.value ||
-        item?.price ||
+        fashionPrice(item.data) ||
         0;
       return sum + price;
     }, 0)
     .toFixed(2);
 });
-//const activeStep = computed(() => store.getters.activeStep);
-
-const edit = () => {
-  store.commit("SET_ACTIVE_STEP",1)
+const edit = (index) => {
+  store.commit("SET_ACTIVE_STEP", index + 1)
 };
 </script>
 
 <style>
 .report-content {
-  border-radius: 10px;
+  border-radius: 15px;
   min-height: 514px;
 }
 
@@ -99,7 +102,7 @@ const edit = () => {
   margin-left: 10px;
   border-bottom: 1px dotted black;
   color: #14365680;
-  flex: 2;
+  flex: 1;
 }
 
 .info-item__name {

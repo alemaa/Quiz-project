@@ -7,7 +7,7 @@
     }"
   >
     <div
-      v-if="activeStep === stepId.FASHION && !displayGenderScreen &&  currentSelectedItemId === id"
+      v-if="activeStep === stepId.FASHION && !displayGenderScreen && currentSelectedItemId === id"
       class="checkmark"
     >
       <svg
@@ -39,8 +39,7 @@ import store from "@/store";
 import AppCard from "./AppCard.vue";
 import { onMounted, defineProps, computed, watch } from "vue";
 import dataApp from "@/assets/data.json";
-console.log(dataApp.screens.fashion, "data");
-//const selectedItems = computed(() => store.getters.selectedItems);
+
 const activeStep = computed(() => store.getters.activeStep);
 const displayGenderScreen = computed(() => store.getters.displayGenderScreen);
 const stepId = computed(() => store.getters.stepId);
@@ -49,7 +48,7 @@ const currentSelectedItem = computed(() => store.getters.currentSelectedItem);
 
 watch(currentSelectedItem, () => {
   console.log(currentSelectedItem.value, "current selected");
-  console.log(currentSelectedItemId.value, "VALUEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
+  console.log(currentSelectedItemId.value, "VALUEEEEEEEEEEEEEEEEEEEEEEEE");
 });
 
 const currentSelectedItemId = computed(
@@ -58,6 +57,11 @@ const currentSelectedItemId = computed(
       (item) => item.id === currentSelectedItem.value?.id
     )?.id
 );
+
+const totalCost = computed(() =>
+  props.data?.reduce((sum,item)=>sum+item.price,0)
+);
+
 const props = defineProps({
   data: {
     type: Object,
@@ -67,15 +71,6 @@ const props = defineProps({
     type: String,
     required: true,
   },
-});
-
-const totalCost = computed(() => {
-  if (currentSelectedItem?.value) {
-    return currentSelectedItem?.value.data
-      .filter((item) => item.price)
-      .reduce((sum, item) => sum + item.price, 0);
-  }
-  return 0;
 });
 
 onMounted(() => {
@@ -89,7 +84,11 @@ onMounted(() => {
   padding-top: 50px;
   border-radius: 20px;
   margin-bottom: 20px;
+}
+
+.cards.cards-fashion {
   position: relative;
+  cursor: pointer;
 }
 
 .total-cost {
@@ -101,12 +100,13 @@ onMounted(() => {
   justify-content: space-between;
 }
 
-.cards.cards-fashion.fashion-item::after {
+.cards-fashion.fashion-item::after {
   content: "";
   inset: 0;
   background: rgba(0, 0, 0, 0.5);
   border-radius: 20px;
   position: absolute;
+  pointer-events: none;
 }
 
 .checkmark{
@@ -137,9 +137,8 @@ onMounted(() => {
     justify-content: center;
   }
 
-  .cards-fashion {
-    justify-content: center;
-    margin-bottom: 20px;
+  .total-cost {
+    flex-basis: 100%;
   }
 }
 </style>

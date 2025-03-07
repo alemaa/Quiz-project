@@ -101,12 +101,13 @@
               ${{ data?.price }}
             </p>
           </strong>
-          <div
+          <button
             class="card-content__tooltip"
+            @click.stop.prevent="show"
             v-if="data?.options?.tooltip?.exists"
           >
-            <img @click="show" src="/images/icon-tooltip.svg" alt="info icon" />
-          </div>
+            <img src="/images/icon-tooltip.svg" alt="info icon" />
+          </button>
         </div>
       </div>
 
@@ -126,17 +127,13 @@
         </div>
       </div>
     </div>
-  </div>
-  <div v-if="activeStep===stepId.FASHION">Total:{{ totalPrice }}</div>
-
+</div>
 </template>
 
 <script setup lang="ts">
 import { computed, defineProps, PropType, ref } from "vue";
 import { useStore } from "vuex";
 import dataApp from "@/assets/data.json";
-
-// data.screens.fashion.male.find(el => el.data.find(item => item.id === props.id))
 
 const store = useStore();
 const activeStep = computed(() => store.getters.activeStep);
@@ -150,25 +147,16 @@ const fashionData = computed(() => {
   );
 });
 
-const totalPrice = computed(() => {
-  if (fashionData.value) {
-    return fashionData.value.data
-      .filter((item) => item.price)
-      .reduce((sum, item) => sum + item.price, 0);
-  }
-  return 0;
-});
-
 const isSelected = computed(() => {
+  console.log(store.state.selectedItems[activeStep.value], 'UG;EEEEEASAFOJASOPFKAOSPFKA')
   if (activeStep.value === stepId.value.FASHION) {
-    return store.state.currentSelectedItem?.id === fashionData?.value.id;
+    return store.state.currentSelectedItem?.id === fashionData?.value.id || store.state.selectedItems[activeStep.value]?.id === fashionData?.value?.id;
   } else {
-    return store.state.currentSelectedItem?.id === props.data?.id;
+    return store.state.currentSelectedItem?.id === props.data?.id || store.state.selectedItems[activeStep.value]?.id === props.data?.id;
   }
 });
 
 const selection = () => {
-  store.dispatch('UPDATE_CURRENT_SELECTED_ITEMS', props.data.id)
   if (activeStep.value === stepId.value.FASHION) {
     if (store.state.currentSelectedItem?.id === fashionData?.value.id) {
       store.state.currentSelectedItem = null;
@@ -191,12 +179,9 @@ const show = () => {
   isOpen.value = !isOpen.value;
 };
 
-
 const checkmarkColor = computed(() => {
   if (activeStep.value - 1 === props?.data?.category_id) {
     return props?.data?.category_id === 1 ? "#0695D3" : "#BE1E2D";
-  } else if (activeStep.value === stepId.value.FASHION) {
-    return "#000000";
   }
   return "#BE1E2D";
 });
@@ -270,14 +255,19 @@ console.log(props.data,'props app card')
   --checkmark-color: #be1e2d;
 }
 
+.test{
+
+}
+
 .card-content {
   margin-bottom: 20px;
+  position: relative;
+  cursor: pointer;
 }
 
 .card-content__fashion {
   padding-left: 10px;
   padding-right: 10px;
-  position: relative;
 }
 
 .tooltip__open {
@@ -312,7 +302,6 @@ console.log(props.data,'props app card')
   display: flex;
   flex-direction: column;
   position: relative;
-  cursor: pointer;
 }
 
 .card-content__location {
@@ -347,10 +336,7 @@ console.log(props.data,'props app card')
   text-align: start;
   color: #143656;
   position: relative;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  top: 0;
+  z-index: 1;
   padding: 10px;
   margin-top: -30px;
 }
@@ -387,7 +373,13 @@ console.log(props.data,'props app card')
 .card-content__tooltip {
   display: flex;
   justify-content: flex-end;
+  cursor: pointer;
+  position: relative;
+  background: transparent;
+  border: 0;
+  margin-left: auto;
 }
+
 
 .card-content__model {
   margin-top: -10px;
@@ -447,12 +439,18 @@ console.log(props.data,'props app card')
   color: white;
 }
 
-.card-content__img.selected::before {
+.card-content__img::before {
   content: "";
   inset: 0;
-  background: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  background-color: black;
   border-radius: 20px;
+  transition: opacity 500ms ease;
   position: absolute;
+}
+
+.card-content__img.selected::before {
+  opacity: 0.5;
 }
 
 .check-icon-fashion {

@@ -51,13 +51,11 @@
                 :data="item.data"
               />
            </template>
-
           <!-- <AppScreens
             v-if="activeStep === item.screen_id"
             :data="activeStep === stepId.FASHION && genderValue ?
             item[genderValue][index]?.data : item.data"
           /> -->
-
         </template>
       </div>
        <ReportScreen v-if="activeStep===stepId.REPORT" :categories="data.categories"/>
@@ -123,7 +121,6 @@ const isItemSelected = computed(() => store.state.currentSelectedItem);
 const activeStep = computed(() => store.getters.activeStep);
 const stepId = computed(() =>store.getters.stepId);
 const displayGenderScreen = computed (()=>store.getters.displayGenderScreen);
-
 const screens = ref(data.categories);
 
 const description = `Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text
