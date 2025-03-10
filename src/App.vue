@@ -66,7 +66,7 @@
       >
         <div class="button">
           <button
-            id="start"
+            class="start"
             @click="startQuiz"
             :disabled="
               activeStep > stepId.START &&
@@ -307,10 +307,12 @@ body {
   bottom: 0;
   background-color: black;
   border: 1px solid black;
-  border-radius: 20px;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
   padding-top: 12px;
   padding-bottom: 12px;
   display: flex;
+  z-index: 100;
 }
 
 .button {
@@ -327,7 +329,7 @@ body {
   color: white;
 }
 
-#start {
+.start {
   min-width: 60%;
   padding-top: 10px;
   padding-bottom: 10px;
@@ -337,7 +339,7 @@ body {
   cursor: pointer;
 }
 
-#start:disabled {
+.start:disabled {
   opacity: 55%;
 }
 

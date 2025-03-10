@@ -9,7 +9,7 @@
   >
     <div
       class="card-content__img"
-      :class="{ selected: isSelected }"
+      :class="{ selected: isSelected, 'selected-fashion':activeStep === stepId.FASHION }"
     >
       <img class="card-image" :src="data?.thumbnail?.filename" />
       <div
@@ -147,31 +147,24 @@ const fashionData = computed(() => {
   );
 });
 
+const selectedItems=computed(()=>store.getters.selectedItems);
+
 const isSelected = computed(() => {
-  console.log(store.state.selectedItems[activeStep.value], 'UG;EEEEEASAFOJASOPFKAOSPFKA')
-  if (activeStep.value === stepId.value.FASHION) {
-    return store.state.currentSelectedItem?.id === fashionData?.value.id || store.state.selectedItems[activeStep.value]?.id === fashionData?.value?.id;
-  } else {
-    return store.state.currentSelectedItem?.id === props.data?.id || store.state.selectedItems[activeStep.value]?.id === props.data?.id;
-  }
+  console.log(selectedItems.value[activeStep.value], 'UG;EEEEEASAFOJASOPFKAOSPFKA')
+    return store.state.currentSelectedItem?.id ===(activeStep.value === stepId.value.FASHION ? fashionData?.value.id  : props.data?.id) 
+    || store.state.selectedItems[activeStep.value]?.id === (activeStep.value === stepId.value.FASHION ? fashionData?.value?.id : props.data?.id);
 });
 
 const selection = () => {
-  if (activeStep.value === stepId.value.FASHION) {
-    if (store.state.currentSelectedItem?.id === fashionData?.value.id) {
-      store.state.currentSelectedItem = null;
-    } else {
-      store.state.currentSelectedItem = fashionData?.value;
-    }
+  if(activeStep.value===stepId.value.FASHION) {
+    store.state.currentSelectedItem = store.state.currentSelectedItem?.id === fashionData?.value.id ? null : fashionData?.value;
+  } else if(store.state.currentSelectedItem?.id === props.data?.id) {
+    store.state.currentSelectedItem = null;
   } else {
-    if (store.state.currentSelectedItem?.id === props.data?.id) {
-      store.state.currentSelectedItem = null;
-    } else {
-      store.state.currentSelectedItem = props.data;
-    }
+    store.state.currentSelectedItem = props.data;
   }
   console.log(store.state.currentSelectedItem, "current");
-};
+}
 
 const isOpen = ref(false);
 
@@ -255,14 +248,11 @@ console.log(props.data,'props app card')
   --checkmark-color: #be1e2d;
 }
 
-.test{
-
-}
-
 .card-content {
   margin-bottom: 20px;
   position: relative;
   cursor: pointer;
+  z-index: 0;
 }
 
 .card-content__fashion {
@@ -348,6 +338,7 @@ console.log(props.data,'props app card')
 .right-side {
   display: flex;
   align-items: center;
+  margin-top: -10px;
 }
 
 .card-content__title {
@@ -380,7 +371,6 @@ console.log(props.data,'props app card')
   margin-left: auto;
 }
 
-
 .card-content__model {
   margin-top: -10px;
 }
@@ -391,11 +381,15 @@ console.log(props.data,'props app card')
   object-fit: cover;
 }
 
-.card-content__price span {
-  font-size: 12px;
+.card-content__price {
+  font-size: 20px;
   font-weight: 500;
   line-height: 14.22px;
   letter-spacing: -0.3px;
+}
+
+.card-content__price span {
+  font-size: 12px;
 }
 
 .card-content__review {
@@ -417,11 +411,12 @@ console.log(props.data,'props app card')
 .card-content__meta {
   display: flex;
   font-size: 9px;
-  gap: 10px;
+  gap: 7px;
   line-height: 10.67px;
   letter-spacing: -0.3px;
   width: 222px;
   margin-top: -20px;
+  flex-wrap: wrap;
 }
 
 .check {
@@ -451,6 +446,10 @@ console.log(props.data,'props app card')
 
 .card-content__img.selected::before {
   opacity: 0.5;
+}
+
+.selected-fashion::before {
+  visibility: hidden;
 }
 
 .check-icon-fashion {

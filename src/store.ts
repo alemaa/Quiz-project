@@ -30,8 +30,9 @@ const store = createStore ({
                 console.log(state.selectedItems, 'state selected items');
             }
         },
-        SET_CURRENT_SELECTED_ITEMS(state,item) {
+        SET_CURRENT_SELECTED_ITEM(state, item) {
             state.currentSelectedItem = item;
+            console.log("SET_CURRENT_SELECTED_ITEM:", state.currentSelectedItem);
         },
         SET_GENDER(state, gender) {
             state.genderValue = gender;
@@ -54,8 +55,8 @@ const store = createStore ({
         UPDATE_GENDER_SCREEN({commit},genderScreen) {
             commit('SET_GENDER_SCREEN',genderScreen)
         },
-        UPDATE_CURRENT_SELECTED_ITEMS({commit},item) {
-            commit('SET_CURRENT_SELECTED_ITEMS',item)
+        UPDATE_CURRENT_SELECTED_ITEM({commit},item) {
+            commit('SET_CURRENT_SELECTED_ITEM',item)
         }
     },
 

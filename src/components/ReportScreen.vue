@@ -58,6 +58,7 @@ const store = useStore();
 const selectedItems = computed(() => store.getters.selectedItems);
 const activeStep = computed(() =>store.getters.activeStep);
 console.log(activeStep.value,'aktivni stepppppppp')
+
  const props=defineProps({
   categories: {
     type: Object,
@@ -87,8 +88,10 @@ const totalPrice = computed(() => {
     }, 0)
     .toFixed(2);
 });
+
 const edit = (index) => {
-  store.commit("SET_ACTIVE_STEP", index + 1)
+    store.commit("SET_ACTIVE_STEP", index + 1);
+    //const selectedItem = store.state.selectedItems[index + 1] || null;
 };
 </script>
 
