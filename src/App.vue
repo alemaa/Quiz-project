@@ -94,7 +94,7 @@
 </template>
 
 <script setup>
-import { computed, ref, watchEffect } from "vue";
+import { computed, ref, watchEffect, watch } from "vue";
 import { useStore } from "vuex";
 import AppScreens from "./components/AppScreens.vue";
 import data from "@/assets/data.json";
@@ -170,6 +170,9 @@ const text = computed(() => {
 });
 
 const bgColor = computed(() => {
+  // if(activeStep.value===stepId.value.PROPERTY) {
+  //   return "#F9EDED";
+  // }
   if(activeStep.value === stepId.value.REPORT){
     return "#C6D9F3";
   }
@@ -182,6 +185,7 @@ const bgColor = computed(() => {
   const currentScreen = screens.value.find(
     (screen) => screen.id === activeStep.value
   );
+  console.log(currentScreen, 'current screen' , currentScreen.color)
   return currentScreen ? currentScreen.color : "#ffffff";
 });
 
@@ -189,17 +193,26 @@ const updateColor = () => {
   document.body.style.setProperty("--backgroundColor", bgColor.value);
 };
 
+watch(activeStep,()=>{
+  updateColor();
+})
+
 const btnColor = computed(() => {
-  if (genderValue.value === "male") {
-    return "#C5E6F9";
-  } else if (genderValue.value === "female") {
-    return "#F5DDFDB0";
-  }
+  console.log(activeStep.value , 'aktivni steeeeeeeeeeeeep')
+   if (activeStep.value === 3 && genderValue.value === "male") {
+   return "#C5E6F9";
+   } else if (activeStep.value === 3 && genderValue.value === "female") {
+     return "#F5DDFDB0";
+   }
 
   const currentScreen = category.value.find(
     (screen) => screen.id === activeStep.value
   );
+  console.log(currentScreen, 'curent screeen -----------------');
+
+  //if(currentScreen === 3) console.log('it isss -- - -- - -');
   return currentScreen ? currentScreen.btnColor : "#ffffff";
+
   });
 
 const startQuiz = () => {
@@ -211,8 +224,7 @@ const startQuiz = () => {
   if (activeStep.value === stepId.value.CARS && !displayGenderScreen.value) {
     store.dispatch("UPDATE_GENDER_SCREEN", true);
   }
-
-  console.log(displayGenderScreen.value, "gendderr display screen");
+  //console.log(displayGenderScreen.value, "gendderr display screen");
   store.dispatch("UPDATE_STEP", activeStep.value + 1);
 
   updateColor();
@@ -228,8 +240,6 @@ const fashionGender = (selectedGender) => {
   store.dispatch("UPDATE_STEP", activeStep.value);
 
   updateColor();
-
-  console.log(displayGenderScreen.value, "gender female");
 };
 
 watchEffect(() => {

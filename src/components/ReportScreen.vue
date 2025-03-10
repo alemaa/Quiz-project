@@ -14,7 +14,9 @@
             <img :src="category?.icon" alt="icon" />
           </div>
           <p class="category-icon__name">{{ category.name }}</p>
-          <img :src="category?.iconEdit" alt="icon edit" @click="edit(index)" />
+          <button class="category-edit" @click="edit(index)">
+            <img :src="category?.iconEdit" alt="icon edit" />
+          </button>
         </div>
         <div class="price-details">
           <strong
@@ -56,16 +58,14 @@ import { useStore } from "vuex";
 
 const store = useStore();
 const selectedItems = computed(() => store.getters.selectedItems);
-const activeStep = computed(() =>store.getters.activeStep);
-console.log(activeStep.value,'aktivni stepppppppp')
 
- const props=defineProps({
+defineProps({
   categories: {
     type: Object,
     required: true,
   },
 });
-console.log(props.categories,'cat')
+
 const isOpen = ref([]);
 
 const show = (index) => {
@@ -90,8 +90,7 @@ const totalPrice = computed(() => {
 });
 
 const edit = (index) => {
-    store.commit("SET_ACTIVE_STEP", index + 1);
-    //const selectedItem = store.state.selectedItems[index + 1] || null;
+  store.commit("SET_ACTIVE_STEP", index + 1);
 };
 </script>
 
@@ -164,6 +163,11 @@ const edit = (index) => {
   border-bottom: 1px solid gray;
 }
 
+.category-edit {
+  background: transparent;
+  border: 0;
+}
+
 .border {
   border-bottom: none;
 }
@@ -181,5 +185,15 @@ const edit = (index) => {
   font-weight: 400;
   line-height: 15px;
   align-items: center;
+}
+
+.category-icon {
+  flex-wrap: wrap;
+}
+
+@media (min-width: 480px) {
+  .category-edit {
+    cursor: pointer;
+  }
 }
 </style>

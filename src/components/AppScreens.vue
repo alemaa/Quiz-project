@@ -48,7 +48,7 @@ const currentSelectedItem = computed(() => store.getters.currentSelectedItem);
 
 watch(currentSelectedItem, () => {
   console.log(currentSelectedItem.value, "current selected");
-  console.log(currentSelectedItemId.value, "VALUEEEEEEEEEEEEEEEEEEEEEEEE");
+  console.log(currentSelectedItemId.value, "trenutno selektovani item za fashion");
 });
 
 const currentSelectedItemId = computed(
@@ -88,7 +88,6 @@ onMounted(() => {
 
 .cards.cards-fashion {
   position: relative;
-  cursor: pointer;
 }
 
 .total-cost {
@@ -140,5 +139,10 @@ onMounted(() => {
   .total-cost {
     flex-basis: 100%;
   }
+
+  .cards.cards-fashion {
+    cursor: pointer;
+  }
+
 }
 </style>

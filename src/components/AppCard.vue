@@ -150,13 +150,13 @@ const fashionData = computed(() => {
 const selectedItems=computed(()=>store.getters.selectedItems);
 
 const isSelected = computed(() => {
-  console.log(selectedItems.value[activeStep.value], 'UG;EEEEEASAFOJASOPFKAOSPFKA')
-    return store.state.currentSelectedItem?.id ===(activeStep.value === stepId.value.FASHION ? fashionData?.value.id  : props.data?.id) 
-    || store.state.selectedItems[activeStep.value]?.id === (activeStep.value === stepId.value.FASHION ? fashionData?.value?.id : props.data?.id);
+  console.log(selectedItems.value[activeStep.value -1], 'selected item za edit')
+  return store.state.currentSelectedItem?.id === (activeStep.value === stepId.value.FASHION ? fashionData?.value.id  : props.data?.id)
+  || store.state.selectedItems[activeStep.value -1]?.id === (activeStep.value === stepId.value.FASHION ? fashionData?.value?.id : props.data?.id);
 });
 
 const selection = () => {
-  if(activeStep.value===stepId.value.FASHION) {
+  if(activeStep.value === stepId.value.FASHION) {
     store.state.currentSelectedItem = store.state.currentSelectedItem?.id === fashionData?.value.id ? null : fashionData?.value;
   } else if(store.state.currentSelectedItem?.id === props.data?.id) {
     store.state.currentSelectedItem = null;
@@ -240,7 +240,6 @@ interface AppCard {
     };
   };
 }
-console.log(props.data,'props app card')
 </script>
 
 <style>
@@ -251,7 +250,6 @@ console.log(props.data,'props app card')
 .card-content {
   margin-bottom: 20px;
   position: relative;
-  cursor: pointer;
   z-index: 0;
 }
 
@@ -338,7 +336,6 @@ console.log(props.data,'props app card')
 .right-side {
   display: flex;
   align-items: center;
-  margin-top: -10px;
 }
 
 .card-content__title {
@@ -414,7 +411,6 @@ console.log(props.data,'props app card')
   gap: 7px;
   line-height: 10.67px;
   letter-spacing: -0.3px;
-  width: 222px;
   margin-top: -20px;
   flex-wrap: wrap;
 }
@@ -456,15 +452,12 @@ console.log(props.data,'props app card')
   visibility: hidden;
 }
 
-.price-fashion {
-  margin-top: -20px;
-}
-
 @media (min-width: 480px) {
   .card-content {
     display: flex;
     flex-direction: column;
     margin-bottom: 20px;
+    cursor: pointer;
   }
 
   .card-content__description {
