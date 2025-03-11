@@ -117,11 +117,15 @@ const genderSelect = ref([
 
 const store = useStore();
 const selectedItems = computed(() => store.getters.selectedItems);
-const isItemSelected = computed(() => store.state.currentSelectedItem);
 const activeStep = computed(() => store.getters.activeStep);
 const stepId = computed(() =>store.getters.stepId);
 const displayGenderScreen = computed (()=>store.getters.displayGenderScreen);
 const screens = ref(data.categories);
+
+const isItemSelected = computed(() => {
+  return store.state.currentSelectedItem ||
+  store.state.selectedItems[activeStep.value-1]?.id
+});
 
 const description = `Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text
 ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,
@@ -170,22 +174,20 @@ const text = computed(() => {
 });
 
 const bgColor = computed(() => {
-  // if(activeStep.value===stepId.value.PROPERTY) {
-  //   return "#F9EDED";
-  // }
   if(activeStep.value === stepId.value.REPORT){
     return "#C6D9F3";
   }
+  if(activeStep.value===stepId.value.FASHION) {
   if (genderValue.value === "male") {
     return "#6AC0F063";
   }
- else if (genderValue.value === "female") {
+  else if (genderValue.value === "female") {
     return "#F5DDFDB0";
   }
+}
   const currentScreen = screens.value.find(
     (screen) => screen.id === activeStep.value
   );
-  console.log(currentScreen, 'current screen' , currentScreen.color)
   return currentScreen ? currentScreen.color : "#ffffff";
 });
 
@@ -198,48 +200,42 @@ watch(activeStep,()=>{
 })
 
 const btnColor = computed(() => {
-  console.log(activeStep.value , 'aktivni steeeeeeeeeeeeep')
-   if (activeStep.value === 3 && genderValue.value === "male") {
+  if(activeStep.value===stepId.value.FASHION){
+   if (genderValue.value === "male") {
    return "#C5E6F9";
-   } else if (activeStep.value === 3 && genderValue.value === "female") {
+   } else if (genderValue.value === "female") {
      return "#F5DDFDB0";
    }
-
+  }
   const currentScreen = category.value.find(
     (screen) => screen.id === activeStep.value
   );
-  console.log(currentScreen, 'curent screeen -----------------');
-
-  //if(currentScreen === 3) console.log('it isss -- - -- - -');
   return currentScreen ? currentScreen.btnColor : "#ffffff";
-
   });
 
 const startQuiz = () => {
   if (store.state.currentSelectedItem) {
-    store.dispatch("UPDATE_SELECTED_ITEMS", store.state.currentSelectedItem);
+    store.dispatch("UPDATE_SELECTED_ITEMS", { item: store.state.currentSelectedItem, position: activeStep.value - 1 });
   }
   store.state.currentSelectedItem = null;
 
   if (activeStep.value === stepId.value.CARS && !displayGenderScreen.value) {
     store.dispatch("UPDATE_GENDER_SCREEN", true);
   }
-  //console.log(displayGenderScreen.value, "gendderr display screen");
   store.dispatch("UPDATE_STEP", activeStep.value + 1);
-
-  updateColor();
 };
 
 const genderValue = computed (() =>store.getters.genderValue);
 
 const fashionGender = (selectedGender) => {
   store.dispatch("UPDATE_GENDER",selectedGender)
-  console.log(genderValue.value,':selected gender')
-
   store.dispatch("UPDATE_GENDER_SCREEN", false);
   store.dispatch("UPDATE_STEP", activeStep.value);
 
   updateColor();
+  watch(activeStep,()=>{
+    fashionGender(selectedGender)
+  })
 };
 
 watchEffect(() => {

@@ -7,7 +7,11 @@
     }"
   >
     <div
-      v-if="activeStep === stepId.FASHION && !displayGenderScreen && currentSelectedItemId === id"
+      v-if="
+        activeStep === stepId.FASHION &&
+        !displayGenderScreen &&
+        currentSelectedItemId === id
+      "
       class="checkmark"
     >
       <svg
@@ -29,7 +33,10 @@
       v-if="activeStep === stepId.FASHION && !displayGenderScreen"
     >
       <p>Total Cost</p>
-      <b><p>${{ totalCost }}</p></b>
+      <b>
+        ${{ totalCost }}
+      </b
+      >
     </div>
   </div>
 </template>
@@ -51,15 +58,19 @@ watch(currentSelectedItem, () => {
   console.log(currentSelectedItemId.value, "trenutno selektovani item za fashion");
 });
 
-const currentSelectedItemId = computed(
-  () =>
+const currentSelectedItemId = computed(() => {
+  return (
     dataApp.screens.fashion[genderValue.value]?.find(
       (item) => item.id === currentSelectedItem.value?.id
+    )?.id ??
+    dataApp.screens.fashion[genderValue.value]?.find(
+      (item) => item.id === store.state.selectedItems[activeStep.value - 1]?.id
     )?.id
-);
+  );
+});
 
 const totalCost = computed(() =>
-  props.data?.reduce((sum,item)=>sum+item.price,0)
+  props.data?.reduce((sum, item) => sum + item.price, 0)
 );
 
 const props = defineProps({
@@ -71,6 +82,7 @@ const props = defineProps({
     type: String,
     required: true,
   },
+  selected: Boolean,
 });
 
 onMounted(() => {
@@ -108,7 +120,7 @@ onMounted(() => {
   pointer-events: none;
 }
 
-.checkmark{
+.checkmark {
   background-color: black;
   width: 85px;
   height: 85px;
@@ -143,6 +155,5 @@ onMounted(() => {
   .cards.cards-fashion {
     cursor: pointer;
   }
-
 }
 </style>

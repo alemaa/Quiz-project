@@ -4,7 +4,7 @@ const store = createStore ({
     state: {
         activeStep: 0,
         selectedItems:[] as {id:Number}[],
-        currentSelectedItem:null,
+        currentSelectedItem: null,
         genderValue:"",
         displayGenderScreen:false,
         stepId : {
@@ -20,14 +20,11 @@ const store = createStore ({
         SET_ACTIVE_STEP(state,steps) {
             state.activeStep=steps
         },
-        SET_SELECTED_ITEMS(state,item) {
-            const index = state.selectedItems.findIndex((selected)=>selected.id === item.id);
-            if(index !== -1) {
-                state.selectedItems.splice(index,1);
-                console.log(state.selectedItems, 'i ifffff');
+        SET_SELECTED_ITEMS(state, { item, position }) {
+            if (position < state.selectedItems.length) {
+                state.selectedItems.splice(position, 1, item);
             } else {
-                 state.selectedItems.push(item);
-                console.log(state.selectedItems, 'state selected items');
+                state.selectedItems.push(item)
             }
         },
         SET_CURRENT_SELECTED_ITEM(state, item) {
@@ -46,8 +43,8 @@ const store = createStore ({
         UPDATE_STEP({commit},steps) {
             commit('SET_ACTIVE_STEP',steps);
         },
-        UPDATE_SELECTED_ITEMS({commit},item){
-            commit('SET_SELECTED_ITEMS',item)
+        UPDATE_SELECTED_ITEMS({commit}, payload) {
+            commit('SET_SELECTED_ITEMS', payload)
         },
         UPDATE_GENDER({commit},gender) {
             commit('SET_GENDER',gender)

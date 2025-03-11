@@ -147,23 +147,21 @@ const fashionData = computed(() => {
   );
 });
 
-const selectedItems=computed(()=>store.getters.selectedItems);
-
 const isSelected = computed(() => {
-  console.log(selectedItems.value[activeStep.value -1], 'selected item za edit')
   return store.state.currentSelectedItem?.id === (activeStep.value === stepId.value.FASHION ? fashionData?.value.id  : props.data?.id)
   || store.state.selectedItems[activeStep.value -1]?.id === (activeStep.value === stepId.value.FASHION ? fashionData?.value?.id : props.data?.id);
 });
 
 const selection = () => {
   if(activeStep.value === stepId.value.FASHION) {
-    store.state.currentSelectedItem = store.state.currentSelectedItem?.id === fashionData?.value.id ? null : fashionData?.value;
-  } else if(store.state.currentSelectedItem?.id === props.data?.id) {
-    store.state.currentSelectedItem = null;
-  } else {
-    store.state.currentSelectedItem = props.data;
+   store.state.currentSelectedItem = store.state.currentSelectedItem?.id === fashionData?.value.id ? null : fashionData?.value
   }
-  console.log(store.state.currentSelectedItem, "current");
+  else {
+    store.state.currentSelectedItem = store.state.currentSelectedItem?.id === props.data?.id ? null : props.data
+  }
+  if(store.state.selectedItems[activeStep.value -1]?.id) {
+    store.state.selectedItems[activeStep.value-1] = [];
+  }
 }
 
 const isOpen = ref(false);
@@ -444,11 +442,7 @@ interface AppCard {
   opacity: 0.5;
 }
 
-.selected-fashion::before {
-  visibility: hidden;
-}
-
-.check-icon-fashion {
+.selected-fashion::before, .check-icon-fashion {
   visibility: hidden;
 }
 

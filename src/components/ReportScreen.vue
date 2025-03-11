@@ -73,7 +73,7 @@ const show = (index) => {
 };
 
 const fashionPrice = (data) => {
-return data?.reduce((sum, item)=> sum + (item.price||0),0);
+  return data?.reduce((sum, item)=> sum + (item.price||0),0);
 };
 
 const totalPrice = computed(() => {
@@ -107,11 +107,7 @@ const edit = (index) => {
   flex: 1;
 }
 
-.info-item__name {
-  flex: 1;
-}
-
-.info-item__value {
+.info-item__name, .info-item__value {
   flex: 1;
 }
 
@@ -185,6 +181,7 @@ const edit = (index) => {
   font-weight: 400;
   line-height: 15px;
   align-items: center;
+  margin-top: 5px;
 }
 
 .category-icon {
