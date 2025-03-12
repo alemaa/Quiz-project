@@ -1,8 +1,8 @@
 <template>
-  <h1 class="report-total-price">${{ totalPrice }}</h1>
+  <h1>${{ totalPrice }}</h1>
 
   <div class="report-content">
-    <div class="report-categories">
+    <div>
       <div
         v-for="(category, index) in categories"
         :key="index"
@@ -98,6 +98,7 @@ const edit = (index) => {
 .report-content {
   border-radius: 15px;
   min-height: 514px;
+  background-color: white;
 }
 
 .separator {
@@ -114,7 +115,7 @@ const edit = (index) => {
 .category-icon__background {
   color: rgb(101, 188, 191);
   background-color: rgba(101, 188, 191, 0.1);
-  border-radius: 50px;
+  border-radius: 100%;
 }
 
 .show-details {
@@ -128,6 +129,9 @@ const edit = (index) => {
   gap: 5px;
   flex: 1;
   padding-right: 10px;
+  font-size: 20px;
+  line-height: 100%;
+  letter-spacing: -0.3px;
 }
 
 .category-icon {
@@ -136,24 +140,18 @@ const edit = (index) => {
   gap: 10px;
   flex: 1;
   padding-left: 10px;
-  font-weight: 600;
-  font-size: 16px;
-  line-height: 21.82px;
 }
 
 .category-icon__name {
   color: #143656;
   opacity: 0.8;
-}
-
-.tooltip__item {
-  display: flex;
-  justify-content: space-between;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 21.82px;
 }
 
 .category-content {
   display: flex;
-  align-items: center;
   gap: 30px;
   flex-wrap: wrap;
   border-bottom: 1px solid gray;

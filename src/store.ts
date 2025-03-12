@@ -29,7 +29,6 @@ const store = createStore ({
         },
         SET_CURRENT_SELECTED_ITEM(state, item) {
             state.currentSelectedItem = item;
-            console.log("SET_CURRENT_SELECTED_ITEM:", state.currentSelectedItem);
         },
         SET_GENDER(state, gender) {
             state.genderValue = gender;

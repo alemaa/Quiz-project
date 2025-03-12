@@ -32,7 +32,7 @@
         </svg>
       </div>
       <div class="card-content__location" v-if="data?.options?.info?.exists">
-        <img class="cars-image" :src="data?.options.info?.icon?.filename" />
+        <img :src="data?.options.info?.icon?.filename" />
         <p>{{ data?.options.info?.text }}</p>
       </div>
     </div>
@@ -127,7 +127,7 @@
         </div>
       </div>
     </div>
-</div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -139,6 +139,8 @@ const store = useStore();
 const activeStep = computed(() => store.getters.activeStep);
 const stepId = computed(() => store.getters.stepId);
 const genderValue = computed(() => store.getters.genderValue);
+const currentSelectedItem = computed(() => store.getters.currentSelectedItem);
+const selectedItems = computed(() =>store.getters.selectedItems);
 
 const fashionData = computed(() => {
   const categoryGender = dataApp?.screens?.fashion[genderValue.value];
@@ -148,20 +150,24 @@ const fashionData = computed(() => {
 });
 
 const isSelected = computed(() => {
-  return store.state.currentSelectedItem?.id === (activeStep.value === stepId.value.FASHION ? fashionData?.value.id  : props.data?.id)
-  || store.state.selectedItems[activeStep.value -1]?.id === (activeStep.value === stepId.value.FASHION ? fashionData?.value?.id : props.data?.id);
+ return currentSelectedItem.value?.id === (activeStep.value === stepId.value.FASHION ? fashionData?.value.id  : props.data?.id)
+ &&  selectedItems.value[activeStep.value -1]?.id !== props.data?.id ||
+ !currentSelectedItem.value?.id && selectedItems.value[activeStep.value -1]?.id === props.data?.id
 });
+
+// watch(isSelected, () => {
+//   console.log(isSelected.value, 'is selected')
+// })
 
 const selection = () => {
   if(activeStep.value === stepId.value.FASHION) {
-   store.state.currentSelectedItem = store.state.currentSelectedItem?.id === fashionData?.value.id ? null : fashionData?.value
+    store.dispatch("UPDATE_CURRENT_SELECTED_ITEM", currentSelectedItem.value?.id === fashionData?.value.id ? null : fashionData?.value)
   }
   else {
-    store.state.currentSelectedItem = store.state.currentSelectedItem?.id === props.data?.id ? null : props.data
+     store.dispatch("UPDATE_CURRENT_SELECTED_ITEM", currentSelectedItem.value?.id === props.data?.id ? null : props.data)
   }
-  if(store.state.selectedItems[activeStep.value -1]?.id) {
-    store.state.selectedItems[activeStep.value-1] = [];
-  }
+
+  console.log(selectedItems.value, 'selected items:')
 }
 
 const isOpen = ref(false);
@@ -238,6 +244,8 @@ interface AppCard {
     };
   };
 }
+
+console.log(props, 'props')
 </script>
 
 <style>
@@ -252,16 +260,7 @@ interface AppCard {
 }
 
 .card-content__fashion {
-  padding-left: 10px;
-  padding-right: 10px;
-}
-
-.tooltip__open {
-  width: 100%;
-}
-
-.tooltip__item {
-  display: flex;
+  padding: 0 10px 0 10px;
 }
 
 .card-content__star {
@@ -270,13 +269,6 @@ interface AppCard {
 
 .card-image {
   border-radius: 20px;
-  object-fit: cover;
-  width: 100%;
-  height: auto;
-}
-
-.check-icon {
-  width: 50px;
 }
 
 .check svg {
@@ -293,23 +285,21 @@ interface AppCard {
 .card-content__location {
   display: flex;
   gap: 5px;
-  align-items: center;
-  justify-content: center;
   border-radius: 50px;
   background-color: #ffffff;
   opacity: 66%;
   font-size: 11px;
-  width: 94px;
-  height: 26px;
+  font-family: "Rubik";
+  font-weight: 300;
+  line-height: 100%;
+  letter-spacing: -0.3px;
   margin-left: 25px;
   margin-top: 30px;
   color: #143656;
   position: absolute;
-}
-
-.card-content__location img {
-  width: 10px;
-  height: 13px;
+  padding: 0 10px 0 10px;
+  max-height: 25px;
+  align-items: center;
 }
 
 .card-content__description {
@@ -317,23 +307,24 @@ interface AppCard {
   flex-wrap: wrap;
   justify-content: space-between;
   background-color: white;
-  border: 2px solid white;
   border-radius: 20px;
   text-align: start;
   color: #143656;
   position: relative;
   z-index: 1;
-  padding: 10px;
   margin-top: -30px;
+  padding: 0 25px 15px 25px;
 }
 
 .card-description__fashion {
   margin-top: 0;
+  padding: 0 15px 0 15px;
 }
 
 .right-side {
   display: flex;
   align-items: center;
+  margin-bottom: -10px;
 }
 
 .card-content__title {
@@ -342,7 +333,6 @@ interface AppCard {
   font-size: 20px;
   line-height: 27.28px;
   letter-spacing: -0.3px;
-  margin: 0;
 }
 
 .card-content__avatar {
@@ -354,6 +344,13 @@ interface AppCard {
   line-height: 13.04px;
   letter-spacing: -0.3px;
   align-items: center;
+  margin-top: -15px;
+}
+
+.card-content__avatar img {
+  width: 18px;
+  height: 18px;
+  object-fit: cover;
 }
 
 .card-content__tooltip {
@@ -366,20 +363,29 @@ interface AppCard {
   margin-left: auto;
 }
 
-.card-content__model {
-  margin-top: -10px;
+.tooltip__open {
+  width: 100%;
 }
 
-.card-content__avatar img {
-  width: 18px;
-  height: 18px;
-  object-fit: cover;
+.tooltip__item {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.card-content__model {
+  font-family: "Rubik";
+  font-size: 11px;
+  font-weight: 300;
+  line-height: 100%;
+  letter-spacing: -0.3px;
+  margin-top: -10px;
 }
 
 .card-content__price {
   font-size: 20px;
   font-weight: 500;
-  line-height: 14.22px;
+  line-height: 100%;
   letter-spacing: -0.3px;
 }
 
@@ -395,8 +401,7 @@ interface AppCard {
   font-weight: 300;
   line-height: 10.67px;
   letter-spacing: -0.3px;
-  color: #000000;
-  opacity: 20%;
+  color: rgb(0, 0, 0, 20%);
 }
 
 .stars {
@@ -409,8 +414,8 @@ interface AppCard {
   gap: 7px;
   line-height: 10.67px;
   letter-spacing: -0.3px;
-  margin-top: -20px;
   flex-wrap: wrap;
+  margin-top: -10px;
 }
 
 .check {
@@ -452,11 +457,6 @@ interface AppCard {
     flex-direction: column;
     margin-bottom: 20px;
     cursor: pointer;
-  }
-
-  .card-content__description {
-    min-width: 50%;
-    position: relative;
   }
 }
 </style>

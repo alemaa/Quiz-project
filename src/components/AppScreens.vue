@@ -12,7 +12,7 @@
         !displayGenderScreen &&
         currentSelectedItemId === id
       "
-      class="checkmark"
+      class="fashion-checkmark"
     >
       <svg
         width="20"
@@ -52,6 +52,7 @@ const displayGenderScreen = computed(() => store.getters.displayGenderScreen);
 const stepId = computed(() => store.getters.stepId);
 const genderValue = computed(() => store.getters.genderValue);
 const currentSelectedItem = computed(() => store.getters.currentSelectedItem);
+const selectedItems = computed(() => store.getters.selectedItems);
 
 watch(currentSelectedItem, () => {
   console.log(currentSelectedItem.value, "current selected");
@@ -64,7 +65,7 @@ const currentSelectedItemId = computed(() => {
       (item) => item.id === currentSelectedItem.value?.id
     )?.id ??
     dataApp.screens.fashion[genderValue.value]?.find(
-      (item) => item.id === store.state.selectedItems[activeStep.value - 1]?.id
+      (item) => item.id === selectedItems.value[activeStep.value - 1]?.id
     )?.id
   );
 });
@@ -96,19 +97,15 @@ onMounted(() => {
   padding-top: 50px;
   border-radius: 20px;
   margin-bottom: 20px;
-}
-
-.cards.cards-fashion {
   position: relative;
 }
 
 .total-cost {
   border-top: 1px solid black;
-  text-align: start;
-  padding-bottom: 20px;
   margin: 20px;
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 
 .cards-fashion.fashion-item::after {
@@ -120,7 +117,7 @@ onMounted(() => {
   pointer-events: none;
 }
 
-.checkmark {
+.fashion-checkmark {
   background-color: black;
   width: 85px;
   height: 85px;
@@ -136,16 +133,17 @@ onMounted(() => {
   z-index: 1;
 }
 
-.checkmark svg {
+.fashion-checkmark svg {
   width: 50px;
   height: 50px;
 }
+
 @media (min-width: 480px) {
   .cards {
     display: flex;
-    gap: 30px;
     flex-wrap: wrap;
     justify-content: center;
+    gap:30px;
   }
 
   .total-cost {

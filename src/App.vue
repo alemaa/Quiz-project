@@ -8,8 +8,8 @@
     />
     <meta charset="UTF-8" />
   </head>
-    <main>
-      <div class="welcome-content">
+  <main>
+    <div class="welcome-content">
       <img :src="header" v-if="activeStep < stepId.REPORT" />
       <div class="welcome-content__description">
         <div v-if="activeStep === stepId.START">
@@ -26,18 +26,21 @@
             <div v-for="(gender, index) in genderSelect" :key="index">
               <button class="gender-icons" @click="fashionGender(gender.value)">
                 <img :src="gender.image" alt="gender icon" />
-                <strong><p>{{ gender.text }}</p></strong>
+                <strong
+                  ><p>{{ gender.text }}</p></strong
+                >
               </button>
             </div>
           </div>
         </div>
-
       </div>
       <div>
-        <template v-for="(item, index) in Object.values(data.screens)" :key="index">
-          <!-- try to optimize this with the computed and formatting data, instead of two v-for  -->
-           <template v-if="activeStep === item.screen_id">
-             <template v-if="activeStep === stepId.FASHION && genderValue">
+        <template
+          v-for="(item, index) in Object.values(data.screens)"
+          :key="index"
+        >
+          <template v-if="activeStep === item.screen_id">
+            <template v-if="activeStep === stepId.FASHION && genderValue">
               <AppScreens
                 v-for="(fashion, index) in Object.values(item[genderValue])"
                 :data="fashion.data"
@@ -46,19 +49,14 @@
               />
             </template>
 
-            <AppScreens
-                 v-else
-                :data="item.data"
-              />
-           </template>
-          <!-- <AppScreens
-            v-if="activeStep === item.screen_id"
-            :data="activeStep === stepId.FASHION && genderValue ?
-            item[genderValue][index]?.data : item.data"
-          /> -->
+            <AppScreens v-else :data="item.data" />
+          </template>
         </template>
       </div>
-       <ReportScreen v-if="activeStep===stepId.REPORT" :categories="data.categories"/>
+      <ReportScreen
+        v-if="activeStep === stepId.REPORT"
+        :categories="data.categories"
+      />
       <div
         v-if="!displayGenderScreen && activeStep <= stepId.FASHION"
         class="welcome-content__button"
@@ -68,10 +66,7 @@
           <button
             class="start"
             @click="startQuiz"
-            :disabled="
-              activeStep > stepId.START &&
-              !isItemSelected
-            "
+            :disabled="activeStep > stepId.START && !isItemSelected"
             :class="{
               'welcome-content__button--txtColor':
                 activeStep > stepId.START && activeStep <= stepId.CARS,
@@ -85,12 +80,13 @@
           class="welcome-content__screens"
           v-if="activeStep !== stepId.START"
         >
-          <b>{{ activeStep }}</b> of <b>{{ Object.keys(data.screens).length }}</b>
+          <b>{{ activeStep }}</b> of
+          <b>{{ Object.keys(data.screens).length }}</b>
         </span>
         {{ item }}
       </div>
     </div>
-    </main>
+  </main>
 </template>
 
 <script setup>
@@ -105,7 +101,7 @@ const genderSelect = ref([
     id: 1,
     image: "/svg/icons/gender_male.svg",
     text: "Male",
-    value: "male"
+    value: "male",
   },
   {
     id: 2,
@@ -118,15 +114,15 @@ const genderSelect = ref([
 const store = useStore();
 const selectedItems = computed(() => store.getters.selectedItems);
 const activeStep = computed(() => store.getters.activeStep);
-const stepId = computed(() =>store.getters.stepId);
-const displayGenderScreen = computed (()=>store.getters.displayGenderScreen);
+const stepId = computed(() => store.getters.stepId);
+const displayGenderScreen = computed(() => store.getters.displayGenderScreen);
+const currentSelectedItem = computed(() => store.getters.currentSelectedItem);
 const screens = ref(data.categories);
 
 const isItemSelected = computed(() => {
-  return store.state.currentSelectedItem ||
-  store.state.selectedItems[activeStep.value-1]?.id
+  return currentSelectedItem.value ||
+  selectedItems.value[activeStep.value-1]?.id
 });
-
 const description = `Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text
 ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,
   but also the leap into electronic typesetting, remaining essentially unchanged.`;
@@ -161,30 +157,29 @@ const category = ref([
 
 const header = computed(() => {
   const currentScreen = category.value.find(
-    (screen) => screen.id === store.state.activeStep
+    (screen) => screen.id === activeStep.value
   );
   return currentScreen ? currentScreen.image : "/svg/logos/logoLoremipsum.svg";
 });
 
 const text = computed(() => {
   const currentScreen = category.value.find(
-    (screen) => screen.id === store.state.activeStep
+    (screen) => screen.id === activeStep.value
   );
   return currentScreen ? currentScreen.text : "Start Quiz";
 });
 
 const bgColor = computed(() => {
-  if(activeStep.value === stepId.value.REPORT){
+  if (activeStep.value === stepId.value.REPORT) {
     return "#C6D9F3";
   }
-  if(activeStep.value===stepId.value.FASHION) {
-  if (genderValue.value === "male") {
-    return "#6AC0F063";
+  if (activeStep.value === stepId.value.FASHION) {
+    if (genderValue.value === "male") {
+      return "#6AC0F063";
+    } else if (genderValue.value === "female") {
+      return "#F5DDFDB0";
+    }
   }
-  else if (genderValue.value === "female") {
-    return "#F5DDFDB0";
-  }
-}
   const currentScreen = screens.value.find(
     (screen) => screen.id === activeStep.value
   );
@@ -195,47 +190,55 @@ const updateColor = () => {
   document.body.style.setProperty("--backgroundColor", bgColor.value);
 };
 
-watch(activeStep,()=>{
+watch(activeStep, () => {
   updateColor();
-})
+});
+//   return currentSelectedItem.value?.id === (activeStep.value === stepId.value.FASHION ? fashionData?.value.id  : props.data?.id) &&
+//    selectedItems.value[activeStep.value -1]?.id !== props.data?.id || !currentSelectedItem.value?.id && selectedItems.value[activeStep.value -1]?.id === props.data?.id
+// });
 
 const btnColor = computed(() => {
-  if(activeStep.value===stepId.value.FASHION){
-   if (genderValue.value === "male") {
-   return "#C5E6F9";
-   } else if (genderValue.value === "female") {
-     return "#F5DDFDB0";
-   }
+  if (activeStep.value === stepId.value.FASHION) {
+    if (genderValue.value === "male") {
+      return "#C5E6F9";
+    } else if (genderValue.value === "female") {
+      return "#F5DDFDB0";
+    }
   }
   const currentScreen = category.value.find(
     (screen) => screen.id === activeStep.value
   );
   return currentScreen ? currentScreen.btnColor : "#ffffff";
-  });
+});
 
 const startQuiz = () => {
-  if (store.state.currentSelectedItem) {
-    store.dispatch("UPDATE_SELECTED_ITEMS", { item: store.state.currentSelectedItem, position: activeStep.value - 1 });
+  if (currentSelectedItem.value) {
+    store.dispatch("UPDATE_SELECTED_ITEMS", {
+      item: currentSelectedItem.value,
+      position: activeStep.value - 1,
+    });
   }
-  store.state.currentSelectedItem = null;
-
+  store.dispatch("UPDATE_CURRENT_SELECTED_ITEM" , null);
   if (activeStep.value === stepId.value.CARS && !displayGenderScreen.value) {
     store.dispatch("UPDATE_GENDER_SCREEN", true);
   }
   store.dispatch("UPDATE_STEP", activeStep.value + 1);
+  if(activeStep.value===stepId.value.REPORT) {
+    store.dispatch("UPDATE_CURRENT_SELECTED_ITEM" , currentSelectedItem.value=null);
+  }
 };
 
-const genderValue = computed (() =>store.getters.genderValue);
+const genderValue = computed(() => store.getters.genderValue);
 
 const fashionGender = (selectedGender) => {
-  store.dispatch("UPDATE_GENDER",selectedGender)
+  store.dispatch("UPDATE_GENDER", selectedGender);
   store.dispatch("UPDATE_GENDER_SCREEN", false);
   store.dispatch("UPDATE_STEP", activeStep.value);
 
   updateColor();
-  watch(activeStep,()=>{
-    fashionGender(selectedGender)
-  })
+  watch(activeStep, () => {
+    fashionGender(selectedGender);
+  });
 };
 
 watchEffect(() => {
@@ -265,16 +268,16 @@ watchEffect(() => {
   margin-top: -20px;
 }
 
-.gender-icons {
-  background-color: #eff5fb;
-  border: #eff5fb;
-  cursor: pointer;
-}
-
 .gender {
   display: flex;
   justify-content: center;
   margin-top: 100px;
+}
+
+.gender-icons {
+  background-color: #eff5fb;
+  border: #eff5fb;
+  cursor: pointer;
 }
 
 body {
@@ -287,14 +290,6 @@ body {
   padding: 0 20px;
   margin: 0 auto;
   font-family: "Nunito";
-}
-
-.welcome-content__screens {
-  font-size: 20px;
-  line-height: 27.28px;
-  letter-spacing: -0.3px;
-  flex-basis: 30%;
-  text-align: center;
 }
 
 .welcome-content__description {
@@ -345,11 +340,14 @@ body {
   cursor: pointer;
 }
 
-.start:disabled {
-  opacity: 55%;
+.welcome-content__screens {
+  font-size: 20px;
+  line-height: 27.28px;
+  letter-spacing: -0.3px;
+  flex-basis: 30%;
 }
 
-.report-content {
-  background-color: white;
+.start:disabled {
+  opacity: 55%;
 }
 </style>
