@@ -44,7 +44,7 @@
 <script setup>
 import store from "@/store";
 import AppCard from "./AppCard.vue";
-import { onMounted, defineProps, computed, watch } from "vue";
+import { defineProps, computed } from "vue";
 import dataApp from "@/assets/data.json";
 
 const props = defineProps({
@@ -58,21 +58,12 @@ const props = defineProps({
   }
 });
 
-onMounted(() => {
-  console.log(props.data, "screen");
-});
-
 const activeStep = computed(() => store.getters.activeStep);
 const displayGenderScreen = computed(() => store.getters.displayGenderScreen);
 const stepId = computed(() => store.getters.stepId);
 const genderValue = computed(() => store.getters.genderValue);
 const currentSelectedItem = computed(() => store.getters.currentSelectedItem);
 const selectedItems = computed(() => store.getters.selectedItems);
-
-watch(currentSelectedItem, () => {
-  console.log(currentSelectedItem.value, "current selected");
-  console.log(currentSelectedItemId.value, "trenutno selektovani item za fashion");
-});
 
 const currentSelectedItemId = computed(() => {
   return (

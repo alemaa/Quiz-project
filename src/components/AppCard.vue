@@ -131,7 +131,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, defineProps, PropType, ref, watch} from "vue";
+import { computed, defineProps, PropType, ref } from "vue";
 import { useStore } from "vuex";
 import dataApp from "@/assets/data.json";
 
@@ -212,10 +212,6 @@ const isSelected = computed(() => {
  !currentSelectedItem.value?.id && selectedItems.value[activeStep.value -1]?.id === props.data?.id
 });
 
- watch(isSelected, () => {
-  console.log(isSelected.value, 'is selected ')
-})
-
 const selection = () => {
   if(activeStep.value === stepId.value.FASHION) {
     store.dispatch("UPDATE_CURRENT_SELECTED_ITEM", currentSelectedItem.value?.id === fashionData?.value.id ? null : fashionData?.value)
@@ -223,8 +219,6 @@ const selection = () => {
   else {
      store.dispatch("UPDATE_CURRENT_SELECTED_ITEM", currentSelectedItem.value?.id === props.data?.id  && selectedItems.value[activeStep.value-1]?.id !== props.data?.id ? null : props.data)
   }
-  console.log(currentSelectedItem.value, 'id u selectedu')
-  console.log(selectedItems.value, 'SELECTED ITEMS:')
 }
 
 const isOpen = ref(false);

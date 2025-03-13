@@ -90,7 +90,7 @@
 </template>
 
 <script setup>
-import { computed, ref, watchEffect, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import { useStore } from "vuex";
 import AppScreens from "./components/AppScreens.vue";
 import data from "@/assets/data.json";
@@ -112,10 +112,6 @@ const descriptionTwo = `It was popularised in the 1960s with the release of Letr
   like Aldus PageMaker including versions of Lorem Ipsum.`;
 
 const fasionDescription = `Please choose your gender to proceed:`;
-
-watchEffect(() => {
-  console.log("Selected Items:", selectedItems.value);
-});
 
 const category = ref([
   {
@@ -236,9 +232,6 @@ const fashionGender = (selectedGender) => {
   });
 };
 
-watchEffect(() => {
-  console.log(activeStep.value, "active step");
-});
 </script>
 
 <style>
