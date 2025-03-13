@@ -11,7 +11,7 @@
       class="card-content__img"
       :class="{ selected: isSelected, 'selected-fashion':activeStep === stepId.FASHION }"
     >
-      <img class="card-image" :src="data?.thumbnail?.filename" />
+      <img class="card-image" :src="data?.thumbnail?.filename" alt="card image" />
       <div
         v-if="isSelected"
         class="check"
@@ -32,7 +32,7 @@
         </svg>
       </div>
       <div class="card-content__location" v-if="data?.options?.info?.exists">
-        <img :src="data?.options.info?.icon?.filename" />
+        <img :src="data?.options.info?.icon?.filename" alt="location icon" />
         <p>{{ data?.options.info?.text }}</p>
       </div>
     </div>
@@ -83,7 +83,7 @@
         </div>
         <div class="card-content__meta" v-else-if="data?.options?.meta?.items">
           <div v-for="(item, key) in data?.options?.meta.items" :key="key">
-            <p>{{ item }}</p>
+            <li>{{ item }}</li>
           </div>
         </div>
       </div>
@@ -94,10 +94,10 @@
             <p v-if="activeStep === stepId.PROPERTY">
               ${{ data?.options?.price?.weekly_value }}<span> per week</span>
             </p>
-            <p v-else-if="activeStep === stepId.CARS">
+            <p class="car-price" v-else-if="activeStep === stepId.CARS">
               ${{ data?.options?.price?.value }}
             </p>
-            <p v-if="activeStep === stepId.FASHION" class="price-fashion">
+            <p v-if="activeStep === stepId.FASHION" class="fashion-price">
               ${{ data?.price }}
             </p>
           </strong>
@@ -122,7 +122,7 @@
         >
           <span class="tooltip__name">{{ item.name }} </span>
           <strong>
-            <span class="tooltip_value">$ {{ item.value }}</span>
+            <span class="tooltip__value">$ {{ item.value }}</span>
           </strong>
         </div>
       </div>
@@ -131,57 +131,9 @@
 </template>
 
 <script setup lang="ts">
-import { computed, defineProps, PropType, ref } from "vue";
+import { computed, defineProps, PropType, ref, watch} from "vue";
 import { useStore } from "vuex";
 import dataApp from "@/assets/data.json";
-
-const store = useStore();
-const activeStep = computed(() => store.getters.activeStep);
-const stepId = computed(() => store.getters.stepId);
-const genderValue = computed(() => store.getters.genderValue);
-const currentSelectedItem = computed(() => store.getters.currentSelectedItem);
-const selectedItems = computed(() =>store.getters.selectedItems);
-
-const fashionData = computed(() => {
-  const categoryGender = dataApp?.screens?.fashion[genderValue.value];
-  return categoryGender?.find((el) =>
-    el.data.find((item) => item.id === props.data?.id)
-  );
-});
-
-const isSelected = computed(() => {
- return currentSelectedItem.value?.id === (activeStep.value === stepId.value.FASHION ? fashionData?.value.id  : props.data?.id)
- &&  selectedItems.value[activeStep.value -1]?.id !== props.data?.id ||
- !currentSelectedItem.value?.id && selectedItems.value[activeStep.value -1]?.id === props.data?.id
-});
-
-// watch(isSelected, () => {
-//   console.log(isSelected.value, 'is selected')
-// })
-
-const selection = () => {
-  if(activeStep.value === stepId.value.FASHION) {
-    store.dispatch("UPDATE_CURRENT_SELECTED_ITEM", currentSelectedItem.value?.id === fashionData?.value.id ? null : fashionData?.value)
-  }
-  else {
-     store.dispatch("UPDATE_CURRENT_SELECTED_ITEM", currentSelectedItem.value?.id === props.data?.id ? null : props.data)
-  }
-
-  console.log(selectedItems.value, 'selected items:')
-}
-
-const isOpen = ref(false);
-
-const show = () => {
-  isOpen.value = !isOpen.value;
-};
-
-const checkmarkColor = computed(() => {
-  if (activeStep.value - 1 === props?.data?.category_id) {
-    return props?.data?.category_id === 1 ? "#0695D3" : "#BE1E2D";
-  }
-  return "#BE1E2D";
-});
 
 interface toolTipData {
   name: string;
@@ -190,10 +142,6 @@ interface toolTipData {
 
 const props = defineProps({
   data: Object as PropType<AppCard>,
-  selected: {
-    type: Boolean,
-    default: false,
-  },
   totalPrice:Number
 });
 
@@ -245,7 +193,52 @@ interface AppCard {
   };
 }
 
-console.log(props, 'props')
+const store = useStore();
+const activeStep = computed(() => store.getters.activeStep);
+const stepId = computed(() => store.getters.stepId);
+const genderValue = computed(() => store.getters.genderValue);
+const currentSelectedItem = computed(() => store.getters.currentSelectedItem);
+const selectedItems = computed(() =>store.getters.selectedItems);
+
+const fashionData = computed(() => {
+  const categoryGender = dataApp?.screens?.fashion[genderValue.value];
+  return categoryGender?.find((el) =>
+    el.data.find((item) => item.id === props.data?.id)
+  );
+});
+
+const isSelected = computed(() => {
+ return currentSelectedItem.value?.id === (activeStep.value === stepId.value.FASHION ? fashionData?.value.id  : props.data?.id) ||
+ !currentSelectedItem.value?.id && selectedItems.value[activeStep.value -1]?.id === props.data?.id
+});
+
+ watch(isSelected, () => {
+  console.log(isSelected.value, 'is selected ')
+})
+
+const selection = () => {
+  if(activeStep.value === stepId.value.FASHION) {
+    store.dispatch("UPDATE_CURRENT_SELECTED_ITEM", currentSelectedItem.value?.id === fashionData?.value.id ? null : fashionData?.value)
+  }
+  else {
+     store.dispatch("UPDATE_CURRENT_SELECTED_ITEM", currentSelectedItem.value?.id === props.data?.id  && selectedItems.value[activeStep.value-1]?.id !== props.data?.id ? null : props.data)
+  }
+  console.log(currentSelectedItem.value, 'id u selectedu')
+  console.log(selectedItems.value, 'SELECTED ITEMS:')
+}
+
+const isOpen = ref(false);
+
+const show = () => {
+  isOpen.value = !isOpen.value;
+};
+
+const checkmarkColor = computed(() => {
+  if (activeStep.value - 1 === props?.data?.category_id) {
+    return props?.data?.category_id === 1 ? "#0695D3" : "#BE1E2D";
+  }
+  return "#BE1E2D";
+});
 </script>
 
 <style>
@@ -297,7 +290,7 @@ console.log(props, 'props')
   margin-top: 30px;
   color: #143656;
   position: absolute;
-  padding: 0 10px 0 10px;
+  padding: 0 10px;
   max-height: 25px;
   align-items: center;
 }
@@ -313,18 +306,16 @@ console.log(props, 'props')
   position: relative;
   z-index: 1;
   margin-top: -30px;
-  padding: 0 25px 15px 25px;
+  padding: 0 15px 15px 15px;
 }
 
 .card-description__fashion {
   margin-top: 0;
-  padding: 0 15px 0 15px;
 }
 
 .right-side {
   display: flex;
   align-items: center;
-  margin-bottom: -10px;
 }
 
 .card-content__title {
@@ -415,7 +406,6 @@ console.log(props, 'props')
   line-height: 10.67px;
   letter-spacing: -0.3px;
   flex-wrap: wrap;
-  margin-top: -10px;
 }
 
 .check {
@@ -447,7 +437,8 @@ console.log(props, 'props')
   opacity: 0.5;
 }
 
-.selected-fashion::before, .check-icon-fashion {
+.selected-fashion::before,
+.check-icon-fashion {
   visibility: hidden;
 }
 

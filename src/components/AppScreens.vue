@@ -47,6 +47,21 @@ import AppCard from "./AppCard.vue";
 import { onMounted, defineProps, computed, watch } from "vue";
 import dataApp from "@/assets/data.json";
 
+const props = defineProps({
+  data: {
+    type: Object,
+    required: true,
+  },
+  id: {
+    type: String,
+    required: true,
+  }
+});
+
+onMounted(() => {
+  console.log(props.data, "screen");
+});
+
 const activeStep = computed(() => store.getters.activeStep);
 const displayGenderScreen = computed(() => store.getters.displayGenderScreen);
 const stepId = computed(() => store.getters.stepId);
@@ -73,22 +88,6 @@ const currentSelectedItemId = computed(() => {
 const totalCost = computed(() =>
   props.data?.reduce((sum, item) => sum + item.price, 0)
 );
-
-const props = defineProps({
-  data: {
-    type: Object,
-    required: true,
-  },
-  id: {
-    type: String,
-    required: true,
-  },
-  selected: Boolean,
-});
-
-onMounted(() => {
-  console.log(props.data, "screen");
-});
 </script>
 
 <style>

@@ -6,15 +6,15 @@
       <div
         v-for="(category, index) in categories"
         :key="index"
-        class="category-content"
+        class="report-categories"
         :class="{ border: isOpen[index] }"
       >
-        <div class="category-icon">
-          <div class="category-icon__background">
-            <img :src="category?.icon" alt="icon" />
+        <div class="categories-icon">
+          <div class="categories-icon__background">
+            <img :src="category?.icon" alt="categories icon" />
           </div>
-          <p class="category-icon__name">{{ category.name }}</p>
-          <button class="category-edit" @click="edit(index)">
+          <p class="categories-name">{{ category.name }}</p>
+          <button class="categories-edit" @click="edit(index)">
             <img :src="category?.iconEdit" alt="icon edit" />
           </button>
         </div>
@@ -32,6 +32,7 @@
             src="/images/details_icon.svg"
             @click="show(index)"
             class="show-details"
+            alt="details icon"
           />
         </div>
 
@@ -56,16 +57,15 @@
 import { computed, defineProps, ref} from "vue";
 import { useStore } from "vuex";
 
-const store = useStore();
-const selectedItems = computed(() => store.getters.selectedItems);
-
 defineProps({
   categories: {
     type: Object,
     required: true,
-  },
+  }
 });
 
+const store = useStore();
+const selectedItems = computed(() => store.getters.selectedItems);
 const isOpen = ref([]);
 
 const show = (index) => {
@@ -102,20 +102,29 @@ const edit = (index) => {
 }
 
 .separator {
-  margin-left: 10px;
+  margin:0 10px;
   border-bottom: 1px dotted black;
   color: #14365680;
   flex: 1;
 }
 
-.info-item__name, .info-item__value {
-  flex: 1;
+.info-item__name {
+  text-align: start;
 }
 
-.category-icon__background {
+.info-item__value  {
+  text-align: end;
+}
+
+.categories-icon__background {
   color: rgb(101, 188, 191);
   background-color: rgba(101, 188, 191, 0.1);
   border-radius: 100%;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .show-details {
@@ -134,15 +143,16 @@ const edit = (index) => {
   letter-spacing: -0.3px;
 }
 
-.category-icon {
+.categories-icon {
   display: flex;
   align-items: center;
   gap: 10px;
   flex: 1;
   padding-left: 10px;
+  flex-wrap: wrap;
 }
 
-.category-icon__name {
+.categories-name {
   color: #143656;
   opacity: 0.8;
   font-weight: 600;
@@ -150,16 +160,17 @@ const edit = (index) => {
   line-height: 21.82px;
 }
 
-.category-content {
+.report-categories {
   display: flex;
   gap: 30px;
   flex-wrap: wrap;
   border-bottom: 1px solid gray;
 }
 
-.category-edit {
+.categories-edit {
   background: transparent;
   border: 0;
+  cursor: pointer;
 }
 
 .border {
@@ -170,6 +181,7 @@ const edit = (index) => {
   width: 100%;
   margin-top: -30px;
   border-top: 1px solid gray;
+  padding: 0 50px;
 }
 
 .info-item {
@@ -182,12 +194,8 @@ const edit = (index) => {
   margin-top: 5px;
 }
 
-.category-icon {
-  flex-wrap: wrap;
-}
-
 @media (min-width: 480px) {
-  .category-edit {
+  .categories-edit {
     cursor: pointer;
   }
 }

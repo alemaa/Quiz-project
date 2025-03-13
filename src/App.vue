@@ -10,7 +10,7 @@
   </head>
   <main>
     <div class="welcome-content">
-      <img :src="header" v-if="activeStep < stepId.REPORT" />
+      <img :src="header" v-if="activeStep < stepId.REPORT" alt="title"/>
       <div class="welcome-content__description">
         <div v-if="activeStep === stepId.START">
           {{ description }}
@@ -96,33 +96,15 @@ import AppScreens from "./components/AppScreens.vue";
 import data from "@/assets/data.json";
 import ReportScreen from "./components/ReportScreen.vue";
 
-const genderSelect = ref([
-  {
-    id: 1,
-    image: "/svg/icons/gender_male.svg",
-    text: "Male",
-    value: "male",
-  },
-  {
-    id: 2,
-    image: "/svg/icons/gender_female.svg",
-    text: "Female",
-    value: "female",
-  },
-]);
-
 const store = useStore();
 const selectedItems = computed(() => store.getters.selectedItems);
 const activeStep = computed(() => store.getters.activeStep);
 const stepId = computed(() => store.getters.stepId);
 const displayGenderScreen = computed(() => store.getters.displayGenderScreen);
 const currentSelectedItem = computed(() => store.getters.currentSelectedItem);
-const screens = ref(data.categories);
+const genderValue = computed(() => store.getters.genderValue);
+const categories = computed(() => data.categories);
 
-const isItemSelected = computed(() => {
-  return currentSelectedItem.value ||
-  selectedItems.value[activeStep.value-1]?.id
-});
 const description = `Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text
 ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,
   but also the leap into electronic typesetting, remaining essentially unchanged.`;
@@ -155,6 +137,21 @@ const category = ref([
   },
 ]);
 
+const genderSelect = ref([
+  {
+    id: 1,
+    image: "/svg/icons/gender_male.svg",
+    text: "Male",
+    value: "male",
+  },
+  {
+    id: 2,
+    image: "/svg/icons/gender_female.svg",
+    text: "Female",
+    value: "female",
+  },
+]);
+
 const header = computed(() => {
   const currentScreen = category.value.find(
     (screen) => screen.id === activeStep.value
@@ -180,7 +177,7 @@ const bgColor = computed(() => {
       return "#F5DDFDB0";
     }
   }
-  const currentScreen = screens.value.find(
+  const currentScreen = categories.value.find(
     (screen) => screen.id === activeStep.value
   );
   return currentScreen ? currentScreen.color : "#ffffff";
@@ -193,9 +190,6 @@ const updateColor = () => {
 watch(activeStep, () => {
   updateColor();
 });
-//   return currentSelectedItem.value?.id === (activeStep.value === stepId.value.FASHION ? fashionData?.value.id  : props.data?.id) &&
-//    selectedItems.value[activeStep.value -1]?.id !== props.data?.id || !currentSelectedItem.value?.id && selectedItems.value[activeStep.value -1]?.id === props.data?.id
-// });
 
 const btnColor = computed(() => {
   if (activeStep.value === stepId.value.FASHION) {
@@ -211,6 +205,11 @@ const btnColor = computed(() => {
   return currentScreen ? currentScreen.btnColor : "#ffffff";
 });
 
+const isItemSelected = computed(() => {
+  return currentSelectedItem.value ||
+  selectedItems.value[activeStep.value -1]
+});
+
 const startQuiz = () => {
   if (currentSelectedItem.value) {
     store.dispatch("UPDATE_SELECTED_ITEMS", {
@@ -219,16 +218,12 @@ const startQuiz = () => {
     });
   }
   store.dispatch("UPDATE_CURRENT_SELECTED_ITEM" , null);
+
   if (activeStep.value === stepId.value.CARS && !displayGenderScreen.value) {
     store.dispatch("UPDATE_GENDER_SCREEN", true);
   }
   store.dispatch("UPDATE_STEP", activeStep.value + 1);
-  if(activeStep.value===stepId.value.REPORT) {
-    store.dispatch("UPDATE_CURRENT_SELECTED_ITEM" , currentSelectedItem.value=null);
-  }
 };
-
-const genderValue = computed(() => store.getters.genderValue);
 
 const fashionGender = (selectedGender) => {
   store.dispatch("UPDATE_GENDER", selectedGender);
@@ -261,6 +256,11 @@ watchEffect(() => {
   --btnColor: white;
 }
 
+body {
+  background-color: var(--backgroundColor);
+  padding-bottom: 70px;
+}
+
 .fashion-description {
   color: black;
   text-align: center;
@@ -278,11 +278,6 @@ watchEffect(() => {
   background-color: #eff5fb;
   border: #eff5fb;
   cursor: pointer;
-}
-
-body {
-  background-color: var(--backgroundColor);
-  padding-bottom: 70px;
 }
 
 .welcome-content {
