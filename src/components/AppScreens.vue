@@ -35,8 +35,7 @@
       <p>Total Cost</p>
       <b>
         ${{ totalCost }}
-      </b
-      >
+      </b>
     </div>
   </div>
 </template>

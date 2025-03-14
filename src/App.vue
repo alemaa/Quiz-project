@@ -9,26 +9,26 @@
     <meta charset="UTF-8" />
   </head>
   <main>
-    <div class="welcome-content">
+    <div class="welcome">
       <img :src="header" v-if="activeStep < stepId.REPORT" alt="title"/>
-      <div class="welcome-content__description">
-        <div v-if="activeStep === stepId.START">
+      <div class="welcome-description">
+        <span v-if="activeStep === stepId.START">
           {{ description }}
-        </div>
+        </span>
         <br />
-        <div v-if="activeStep === stepId.START">
+        <span v-if="activeStep === stepId.START">
           {{ descriptionTwo }}
-        </div>
+        </span>
 
         <div v-if="displayGenderScreen">
-          <h2 class="fashion-description">{{ fasionDescription }}</h2>
-          <div class="gender">
+          <h2 class="welcome-fashion__description">{{ fasionDescription }}</h2>
+          <div class="welcome-fashion__gender">
             <div v-for="(gender, index) in genderSelect" :key="index">
-              <button class="gender-icons" @click="fashionGender(gender.value)">
+              <button class="welcome-gender__icons" @click="fashionGender(gender.value)">
                 <img :src="gender.image" alt="gender icon" />
-                <strong
-                  ><p>{{ gender.text }}</p></strong
-                >
+                <strong>
+                  <p>{{ gender.text }}</p>
+                </strong>
               </button>
             </div>
           </div>
@@ -59,8 +59,8 @@
       />
       <div
         v-if="!displayGenderScreen && activeStep <= stepId.FASHION"
-        class="welcome-content__button"
-        :class="{ 'welcome-content__button--white': activeStep > stepId.START }"
+        class="welcome-button"
+        :class="{ 'welcome-button--white': activeStep > stepId.START }"
       >
         <div class="button">
           <button
@@ -68,7 +68,7 @@
             @click="startQuiz"
             :disabled="activeStep > stepId.START && !isItemSelected"
             :class="{
-              'welcome-content__button--txtColor':
+              'welcome-button--txtColor':
                 activeStep > stepId.START && activeStep <= stepId.CARS,
             }"
             :style="{ backgroundColor: btnColor }"
@@ -77,7 +77,7 @@
           </button>
         </div>
         <span
-          class="welcome-content__screens"
+          class="welcome-screens"
           v-if="activeStep !== stepId.START"
         >
           <b>{{ activeStep }}</b> of
@@ -104,6 +104,7 @@ const displayGenderScreen = computed(() => store.getters.displayGenderScreen);
 const currentSelectedItem = computed(() => store.getters.currentSelectedItem);
 const genderValue = computed(() => store.getters.genderValue);
 const categories = computed(() => data.categories);
+const isItemSelected = computed(() =>  currentSelectedItem.value || selectedItems.value[activeStep.value -1]);
 
 const description = `Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text
 ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,
@@ -162,21 +163,22 @@ const text = computed(() => {
   return currentScreen ? currentScreen.text : "Start Quiz";
 });
 
+
 const bgColor = computed(() => {
-  if (activeStep.value === stepId.value.REPORT) {
+  switch(true) {
+    case activeStep.value === stepId.value.REPORT :
     return "#C6D9F3";
-  }
-  if (activeStep.value === stepId.value.FASHION) {
-    if (genderValue.value === "male") {
-      return "#6AC0F063";
-    } else if (genderValue.value === "female") {
-      return "#F5DDFDB0";
+    case activeStep.value === stepId.value.FASHION && genderValue.value === "male":
+    return "#6AC0F063";
+    case activeStep.value === stepId.value.FASHION && genderValue.value === "female":
+    return "#F5DDFDB0" ;
+    default: {
+    const currentScreen = categories.value.find(
+      (screen) => screen.id === activeStep.value
+    );
+    return currentScreen ? currentScreen.color : "#ffffff";
     }
   }
-  const currentScreen = categories.value.find(
-    (screen) => screen.id === activeStep.value
-  );
-  return currentScreen ? currentScreen.color : "#ffffff";
 });
 
 const updateColor = () => {
@@ -188,22 +190,18 @@ watch(activeStep, () => {
 });
 
 const btnColor = computed(() => {
-  if (activeStep.value === stepId.value.FASHION) {
-    if (genderValue.value === "male") {
+  switch(true) {
+    case activeStep.value === stepId.value.FASHION && genderValue.value === "male":
       return "#C5E6F9";
-    } else if (genderValue.value === "female") {
+    case activeStep.value === stepId.value.FASHION && genderValue.value === "female":
       return "#F5DDFDB0";
+    default: {
+      const currentScreen = category.value.find(
+        (screen) => screen.id === activeStep.value
+      );
+      return currentScreen ? currentScreen.btnColor : "#ffffff";
     }
   }
-  const currentScreen = category.value.find(
-    (screen) => screen.id === activeStep.value
-  );
-  return currentScreen ? currentScreen.btnColor : "#ffffff";
-});
-
-const isItemSelected = computed(() => {
-  return currentSelectedItem.value ||
-  selectedItems.value[activeStep.value -1]
 });
 
 const startQuiz = () => {
@@ -246,7 +244,7 @@ const fashionGender = (selectedGender) => {
 
 :root {
   --backgroundColor: white;
-  --btnColor: white;
+  --btnColor: #ffffff;
 }
 
 body {
@@ -254,33 +252,37 @@ body {
   padding-bottom: 70px;
 }
 
-.fashion-description {
-  color: black;
-  text-align: center;
-  font-weight: 500;
-  margin-top: -20px;
-}
-
-.gender {
-  display: flex;
-  justify-content: center;
-  margin-top: 100px;
-}
-
-.gender-icons {
-  background-color: #eff5fb;
-  border: #eff5fb;
-  cursor: pointer;
-}
-
-.welcome-content {
+.welcome {
   max-width: 1050px;
   padding: 0 20px;
   margin: 0 auto;
   font-family: "Nunito";
 }
 
-.welcome-content__description {
+.welcome img {
+  max-width: 100%;
+}
+
+.welcome-fashion__description {
+  color: black;
+  text-align: center;
+  font-weight: 500;
+  margin-top: -20px;
+}
+
+.welcome-fashion__gender {
+  display: flex;
+  justify-content: center;
+  margin-top: 100px;
+}
+
+.welcome-gender__icons {
+  background-color: #eff5fb;
+  border: #eff5fb;
+  cursor: pointer;
+}
+
+.welcome-description {
   margin-top: 50px;
   text-align: start;
   line-height: 25.6px;
@@ -289,7 +291,7 @@ body {
   color: #1f2c41;
 }
 
-.welcome-content__button {
+.welcome-button {
   min-width: 100%;
   position: fixed;
   left: 0;
@@ -309,12 +311,12 @@ body {
   text-align: end;
 }
 
-.welcome-content__button--white {
+.welcome-button--white {
   background-color: white;
   border: 2px solid white;
 }
 
-.welcome-content__button--txtColor {
+.welcome-button--txtColor {
   color: white;
 }
 
@@ -328,7 +330,7 @@ body {
   cursor: pointer;
 }
 
-.welcome-content__screens {
+.welcome-screens {
   font-size: 20px;
   line-height: 27.28px;
   letter-spacing: -0.3px;

@@ -11,11 +11,11 @@
       class="card-content__img"
       :class="{ selected: isSelected, 'selected-fashion':activeStep === stepId.FASHION }"
     >
-      <img class="card-image" :src="data?.thumbnail?.filename" alt="card image" />
+      <img class="card-content__image" :src="data?.thumbnail?.filename" alt="card image" />
       <div
         v-if="isSelected"
-        class="check"
-        :class="{ 'check-icon-fashion': activeStep === stepId.FASHION }"
+        class="card-content__check"
+        :class="{ 'check-icon__fashion': activeStep === stepId.FASHION }"
         :style="{ '--checkmark-color': checkmarkColor }"
       >
         <svg
@@ -88,16 +88,16 @@
         </div>
       </div>
 
-      <div class="right-side">
+      <div class="card-content__right-side">
         <div class="card-content__price">
           <strong>
             <p v-if="activeStep === stepId.PROPERTY">
               ${{ data?.options?.price?.weekly_value }}<span> per week</span>
             </p>
-            <p class="car-price" v-else-if="activeStep === stepId.CARS">
+            <p v-else-if="activeStep === stepId.CARS">
               ${{ data?.options?.price?.value }}
             </p>
-            <p v-if="activeStep === stepId.FASHION" class="fashion-price">
+            <p v-if="activeStep === stepId.FASHION">
               ${{ data?.price }}
             </p>
           </strong>
@@ -254,11 +254,11 @@ const checkmarkColor = computed(() => {
   color: red;
 }
 
-.card-image {
+.card-content__image {
   border-radius: 20px;
 }
 
-.check svg {
+.card-content__check svg {
   width: 50px;
   height: 50px;
 }
@@ -307,7 +307,7 @@ const checkmarkColor = computed(() => {
   margin-top: 0;
 }
 
-.right-side {
+.card-content__right-side {
   display: flex;
   align-items: center;
 }
@@ -402,7 +402,7 @@ const checkmarkColor = computed(() => {
   flex-wrap: wrap;
 }
 
-.check {
+.card-content__check {
   background-color: var(--checkmark-color);
   width: 85px;
   height: 85px;
@@ -432,7 +432,7 @@ const checkmarkColor = computed(() => {
 }
 
 .selected-fashion::before,
-.check-icon-fashion {
+.check-icon__fashion {
   visibility: hidden;
 }
 
