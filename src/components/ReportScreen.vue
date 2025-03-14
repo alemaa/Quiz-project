@@ -1,49 +1,50 @@
 <template>
-  <h1>${{ totalPrice }}</h1>
+  <div>
+    <h1>${{ totalPrice }}</h1>
 
-  <div class="report-content">
-    <div>
+    <div class="report">
       <div
         v-for="(category, index) in categories"
         :key="index"
         class="report-categories"
         :class="{ border: isOpen[index] }"
       >
-        <div class="categories-icon">
-          <div class="categories-icon__background">
+        <div class="report-categories__icon">
+          <div class="report-categories__icon-background">
             <img :src="category?.icon" alt="categories icon" />
           </div>
-          <p class="categories-name">{{ category.name }}</p>
-          <button class="categories-edit" @click="edit(index)">
+          <p class="report-categories__name">{{ category.name }}
+          </p>
+          <button class="report-categories__edit" @click="edit(index)">
             <img :src="category?.iconEdit" alt="icon edit" />
           </button>
         </div>
-        <div class="price-details">
-          <strong
-            ><p>
+        <div class="report-price__details">
+          <strong>
+            <p>
               ${{
                 selectedItems[index]?.options?.price?.weekly_value ||
                 selectedItems[index]?.options?.price?.value ||
                 fashionPrice(selectedItems[index]?.data)
               }}
-            </p></strong
-          >
+            </p>
+          </strong>
           <img
             src="/images/details_icon.svg"
             @click="show(index)"
-            class="show-details"
+            class="report-price__show-details"
             alt="details icon"
           />
         </div>
 
-        <div class="info-open" v-if="isOpen[index]">
+        <div class="report-price__info-open" v-if="isOpen[index]">
           <div
             class="info-item"
             v-for="(item, index) in selectedItems[index]?.options?.tooltip
               ?.data"
             :key="index"
           >
-            <span class="info-item__name"> {{ item.name }} </span>
+            <span class="info-item__name"> {{ item.name }}</span>
             <span class="separator"></span>
             <span class="info-item__value">${{ item.value }} </span>
           </div>
@@ -95,7 +96,7 @@ const edit = (index) => {
 </script>
 
 <style>
-.report-content {
+.report {
   border-radius: 15px;
   min-height: 514px;
   background-color: white;
@@ -116,7 +117,7 @@ const edit = (index) => {
   text-align: end;
 }
 
-.categories-icon__background {
+.report-categories__icon-background {
   color: rgb(101, 188, 191);
   background-color: rgba(101, 188, 191, 0.1);
   border-radius: 100%;
@@ -127,11 +128,11 @@ const edit = (index) => {
   justify-content: center;
 }
 
-.show-details {
+.report-price__show-details {
   cursor: pointer;
 }
 
-.price-details {
+.report-price__details {
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -143,7 +144,7 @@ const edit = (index) => {
   letter-spacing: -0.3px;
 }
 
-.categories-icon {
+.report-categories__icon {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -152,7 +153,7 @@ const edit = (index) => {
   flex-wrap: wrap;
 }
 
-.categories-name {
+.report-categories__name {
   color: #143656;
   opacity: 0.8;
   font-weight: 600;
@@ -167,7 +168,7 @@ const edit = (index) => {
   border-bottom: 1px solid gray;
 }
 
-.categories-edit {
+.report-categories__edit {
   background: transparent;
   border: 0;
   cursor: pointer;
@@ -177,7 +178,7 @@ const edit = (index) => {
   border-bottom: none;
 }
 
-.info-open {
+.report-price__info-open {
   width: 100%;
   margin-top: -30px;
   border-top: 1px solid gray;
@@ -195,7 +196,7 @@ const edit = (index) => {
 }
 
 @media (min-width: 480px) {
-  .categories-edit {
+  .report-categories__edit {
     cursor: pointer;
   }
 }
